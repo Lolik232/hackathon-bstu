@@ -16,7 +16,9 @@
 
 ## Запуск
 
-### с помощью **Docker**
+### С помощью **Docker**
+
+[Скачать docker](https://www.docker.com/)
 
 ```shell
 docker compose up
