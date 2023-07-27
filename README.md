@@ -13,3 +13,15 @@
 ## Описание
 
 Какой-то осмысленный текст...
+
+## Запуск
+
+### с помощью **Docker**
+
+```shell
+docker compose up
+
+or
+
+docker-compose up
+```
