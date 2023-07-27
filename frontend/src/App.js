@@ -1,21 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
+
+const iconPath = process.env.PUBLIC_URL + '/favicon.jpg'
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img src={iconPath} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          По 100 грамм?
         </p>
         <a
           className="App-link"
-          href="https://reactjs.org"
+          href="https://vk.com/return_418"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Писать сюда
         </a>
       </header>
     </div>
