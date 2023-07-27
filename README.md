@@ -20,8 +20,10 @@
 
 ```shell
 docker compose up
+```
 
-or
+или
 
+```shell
 docker-compose up
 ```
