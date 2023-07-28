@@ -19,6 +19,7 @@ function TestHeader() {
     )
 }
 
+
 function TestName(props) {
     return (
         <div className={"TestName"}>
@@ -69,6 +70,7 @@ function TestNavigationForm(props) {
         </div>
     )
 }
+
 function TestMain(props) {
     return (
         <main>
@@ -91,4 +93,24 @@ function TestFooter() {
     )
 }
 
+
+function TestName(props) {
+    return (
+        <div id="test_name">
+            <h2>{props.name}</h2>
+        </div>
+    )
+}
+
+function TestQuestionList(props) {
+    return (
+        <ul>
+            {props.questions.map(
+                (obj) => <li key={obj}>{obj}</li>)
+            }
+        </ul>
+    )
+}
+
 export default Test;
+
