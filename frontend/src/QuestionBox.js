@@ -1,81 +1,208 @@
-const OneAnswerQuestionBoxName = "Вопрос с выбором одного правильного ответа"
-const MultipleAnswerQuestionBoxName = "Вопрос с выбором множественного ответа"
-const SequenceAnswerQuestionBoxName = "Установление последовательности"
-const MatchAnswerQuestionBoxName = "Установление соответствия"
+import React from "react";
+import "./QuestionBox.css"
 
-const AddictionAnswerQuestionBoxName = "Дополение фразы"
-const LongAnswerQuestionBoxName = "Развернутый ответ"
+import {
+    Badge,
+    Form,
+    Card,
+    Container,
+    ListGroup, ListGroupItem
+} from "react-bootstrap";
 
-export function OneAnswerQuestionBox(props) {
+import {
+    DndContext,
+    closestCenter
+} from "@dnd-kit/core";
+
+import {
+    arrayMove,
+    SortableContext,
+    verticalListSortingStrategy
+} from "@dnd-kit/sortable";
+
+import {SortableItem} from './SortableItem';
+
+
+export function GetQuestionBoxContent(type, question, answer, difficulty, cost, hash) {
+    return {
+        type: type,
+        question: question,
+        answer: answer,
+        difficulty: difficulty,
+        cost: cost,
+        hash: hash
+    }
+}
+
+export function QuestionBox({content}) {
     return (
-        <QuestionBox type={OneAnswerQuestionBoxName} difficulty={props.difficulty} condition={props.condition} hash={props.hash} answers={props.answers} cost={props.cost}/>
+        <Container className="CardBox">
+            <Card>
+                <Card.Header>
+                    <QuestionBoxHeader content={content}/>
+                </Card.Header>
+                <Card.Body>
+                    <QuestionBoxBody content={content}/>
+                    <QuestionBoxAnswer content={content}/>
+                </Card.Body>
+                <Card.Footer>
+                    <QuestionBoxFooter content={content}/>
+                </Card.Footer>
+            </Card>
+        </Container>
     )
 }
 
-
-export function QuestionBox(props) {
+function QuestionBoxHeader({content}) {
     return (
-        <section>
-            <QuestionBoxHeader type={props.type} difficulty={props.difficulty}/>
-            <QuestionBoxCondition condition={props.condition}/>
-            <QuestionBoxAnswer hash={props.hash} type={props.type} answers={props.answers}/>
-            <QuestionBoxFooter cost={props.cost}/>
-        </section>
-    )
-}
-
-function QuestionBoxHeader(props) {
-    return (
-        <header>
-            <div><h3>{props.type}</h3></div>
-            <div>{props.difficulty}</div>
-        </header>
-    )
-}
-
-function QuestionBoxCondition(props) {
-    return (
-        <div>
-            <p>{props.condition}</p>
+        <div className="d-flex justify-content-between">
+            <i>{GetQuestionTypeName(content)}</i>
+            <Badge pill bg={GetDifficultyColor(content)}>{GetDifficultyName(content)}</Badge>
         </div>
     )
 }
 
-function QuestionBoxAnswer(props) {
-    switch (props.type) {
-        case OneAnswerQuestionBoxName:
-            return (
-                <form>
-                    {props.answers.map((obj) =>
-                        {
-                            return (
-                                <>
-                                    <input type={"radio"} id={obj} name={props.hash} value={obj}/>
-                                    <label for={obj}>{obj}</label>
-                                </>
-                                )
-
-                        }
-                    )}
-                </form>
-            );
-        case MultipleAnswerQuestionBoxName:
-            break;
-        case SequenceAnswerQuestionBoxName:
-            break;
-        case MatchAnswerQuestionBoxName:
-            break;
-        case AddictionAnswerQuestionBoxName:
-        case LongAnswerQuestionBoxName:
-            break;
-    }
-
+function QuestionBoxBody({content}) {
+    return (
+        <div>
+            <p>{content.question}</p>
+        </div>
+    )
 }
 
-function QuestionBoxFooter(props) {
+function QuestionBoxAnswer({content}) {
+    switch (content.type) {
+        case 0:
+            return <QuestionBoxOneAnswer content={content}/>;
+        case 1:
+            return <QuestionBoxMultipleAnswer content={content}/>;
+        case 2:
+            return <QuestionBoxSequenceAnswer content={content}/>;
+    }
+}
+
+function QuestionBoxFooter({content}) {
     return (
-        <footer>
-            <div>{props.cost}</div>
-        </footer>
+        <div className="d-flex justify-content-end">
+            <i>{content.cost} {GetNoun(content.cost, "балл", "балла", "баллов")}</i>
+        </div>
     )
+}
+
+function QuestionBoxOneAnswer({content}) {
+    return (
+        <div>
+            {content.answer.map((answer, index) => {
+                let key = content.hash + "_" + index;
+                return (
+                        <Card>
+                            <Card.Body >
+                                {answer}
+                            </Card.Body>
+                        </Card>
+                )
+            })}
+        </div>
+    )
+}
+
+function QuestionBoxMultipleAnswer({content}) {
+    return (
+        <Form>
+            {content.answer.map((answer, index) => {
+                let key = content.hash + "_" + index;
+                return (
+                    <div key={key} className={"mb-3"}>
+                        <Form.Check
+                            type={"checkbox"}
+                            id={key}
+                            name={content.hash}
+                            label={answer}
+                        />
+                    </div>
+                )
+            })}
+        </Form>
+    )
+}
+
+function QuestionBoxSequenceAnswer({content}) {
+    const [answers, setAnswers] = React.useState(content.answer);
+
+    return (
+        <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={answers} strategy={verticalListSortingStrategy}>
+                {answers.map(language => <SortableItem key={language} id={language}/>)}
+            </SortableContext>
+        </DndContext>
+    )
+
+    function handleDragEnd(event) {
+        const {active, over} = event;
+
+        if (active.id !== over.id) {
+            setAnswers((items) => {
+                const activeIndex = items.indexOf(active.id);
+                const overIndex = items.indexOf(over.id);
+                console.log(arrayMove(items, activeIndex, overIndex));
+                return arrayMove(items, activeIndex, overIndex);
+            });
+
+        }
+    }
+}
+
+function GetQuestionTypeName(content) {
+    switch (content.type) {
+        case 0:
+            return "Вопрос с выбором одного ответа";
+        case 1:
+            return "Вопрос с выбором множественного ответа";
+        case 2:
+            return "Вопрос на установление последовательности";
+        case 3:
+            return "Вопрос на установление соответствия";
+        case 4:
+            return "Вопрос на дополнение фразы";
+        case 5:
+            return "Вопрос с развернутым ответом";
+    }
+}
+
+function GetDifficultyColor(content) {
+    switch (content.difficulty) {
+        case 0:
+            return "success";
+        case 1:
+            return "warning";
+        case 2:
+            return "danger";
+    }
+}
+
+function GetDifficultyName(content) {
+    switch (content.difficulty) {
+        case 0:
+            return "Легко";
+        case 1:
+            return "Средне";
+        case 2:
+            return "Сложно";
+    }
+}
+
+function GetNoun(number, one, two, five) {
+    let n = Math.abs(number);
+    n %= 100;
+    if (n >= 5 && n <= 20) {
+        return five;
+    }
+    n %= 10;
+    if (n === 1) {
+        return one;
+    }
+    if (n >= 2 && n <= 4) {
+        return two;
+    }
+    return five;
 }
