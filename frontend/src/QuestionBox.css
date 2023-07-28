@@ -1,0 +1,7 @@
+.CardBox {
+    min-width: 350px;
+}
+
+.CardBox + .CardBox {
+    margin-top: 30px;
+}
