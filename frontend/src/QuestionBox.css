@@ -5,3 +5,7 @@
 .CardBox + .CardBox {
     margin-top: 30px;
 }
+
+.ActiveAnswer {
+    background-color: cadetblue;
+}
