@@ -14,7 +14,6 @@ function Test(props) {
     )
 }
 
-
 function TestName({name}) {
     return (
         <div className={"TestName"}>
