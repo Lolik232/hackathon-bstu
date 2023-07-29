@@ -8,7 +8,6 @@ export const DraggableIndexed = ({indexedRef, onChanged}) => {
         onChanged();
     }
 
-
     const handleOnDragEnd = (event) => {
         if (!event.destination) return;
 
@@ -19,6 +18,7 @@ export const DraggableIndexed = ({indexedRef, onChanged}) => {
         handleOnChanged();
     }
 
+    handleOnChanged();
     return (<DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId={Math.random().toString()}>
             {provided => (<ListGroup {...provided.droppableProps} ref={provided.innerRef}>

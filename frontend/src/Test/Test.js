@@ -30,26 +30,29 @@ function TestName({name}) {
 }
 
 function TestQuestionList() {
+    const handleOnChanged = (answer) => {
+        console.log(JSON.stringify(answer))
+    }
+
     return (
         <div className="TestQuestionList">
-            {/*<QuestionBox content={GetQuestionBoxContent(0, "Сколько?", ["Много", "Мало", "Гоголев"], 1, 1, 123)}/>*/}
-            {/*<QuestionBox content={GetQuestionBoxContent(1, "Сколько?", ["Много", "Мало", "Гоголев"], 0, 5, 124)}/>*/}
-            {/*<QuestionBox content={GetQuestionBoxContent(2, "Сколько?", ["Много", "Мало", "Гоголев"], 2, 23, 214)}/>*/}
+            <QuestionBox content={GetQuestionBoxContent(0, "Сколько?",
+                ["Много", "Мало", "Гоголев"],
+                1, 1, 123)}
+                         onChanged={handleOnChanged}/>
+            <QuestionBox content={GetQuestionBoxContent(1, "Сколько?",
+                ["Много", "Мало", "Гоголев"],
+                0, 5, 124)}
+                         onChanged={handleOnChanged}/>
+            <QuestionBox content={GetQuestionBoxContent(2, "Сколько?",
+                ["Много", "Мало", "Гоголев"],
+                2, 23, 214)}
+                         onChanged={handleOnChanged}/>
             <QuestionBox content={GetQuestionBoxContent(3, "Где?", {
                 staticList: ["Саня", "Степа", "Гоголев"],
                 draggableList: ["Сколько?", "Фурри", "Танки"]
-            }, 1, 5, 1244)} onChanged={(answer)=>{
-                console.log(JSON.stringify(answer))
-            }}/>
-            {/*<QuestionBox content={GetQuestionBoxContent(3, "Где?", {*/}
-            {/*    staticList: ["Саня", "Степа", "Гоголев"],*/}
-            {/*    draggableList: ["Сколько?", "Фурри", "Танки"]*/}
-            {/*}, 2, 5, 1244)}/>*/}
-            {/*<QuestionBox content={GetQuestionBoxContent(3, "Где?", {*/}
-            {/*    staticList: ["Саня", "Степа", "Гоголев"],*/}
-            {/*    draggableList: ["Сколько?", "Фурри", "Танки"]*/}
-            {/*}, 0, 5, 1244)}/>*/}
-            {/*{listObj.value.map((obj) => <p>{obj.value} {obj.index}</p>)}*/}
+            }, 1, 5, 1244)}
+                         onChanged={handleOnChanged}/>
         </div>
     )
 }

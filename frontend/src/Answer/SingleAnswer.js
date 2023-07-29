@@ -1,6 +1,12 @@
-// import {GetRadioNumeratedList} from "../List/NumeratedList";
-// import {CheckableNumeratedListGroup} from "../List/CheckableNumeratedListGroup";
-//
-// export function SingleAnswer({list = []}) {
-//     return <CheckableNumeratedListGroup list={GetRadioNumeratedList(Array.from(list))}/>
-// }
+import {RadioIndexed} from "../List/CheckableIndexed";
+import {makeCheckable, makeIndexed, makeRef} from "../List/List";
+
+export function SingleAnswer({list, onChanged}) {
+    const checkableIndexedRef = makeRef(makeIndexed(makeCheckable(list)));
+
+    const handleOnChanged = () => {
+        onChanged(checkableIndexedRef.ref.filter(item => item.checked).map(item => item.index))
+    }
+
+    return <RadioIndexed checkableIndexedRef={checkableIndexedRef} onChanged={handleOnChanged}/>
+}

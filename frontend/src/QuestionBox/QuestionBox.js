@@ -2,6 +2,9 @@ import React from "react";
 import {Badge, Card, Container} from "react-bootstrap";
 import {MatchAnswer} from "../Answer/MatchAnswer";
 import {makeCheckable, makeIndexed, makeRef} from "../List/List";
+import {SingleAnswer} from "../Answer/SingleAnswer";
+import {MultipleAnswer} from "../Answer/MultipleAnswer";
+import {SequenceAnswer} from "../Answer/SequenceAnswer";
 
 export function GetQuestionBoxContent(type, question, answer, difficulty, cost, hash) {
     return {
@@ -41,7 +44,8 @@ function QuestionBoxHeader({content}) {
     return (
         <div className="d-flex justify-content-between">
             <i>{GetQuestionTypeName(content)}</i>
-            <Badge className={"DifficultyBadge"} pill bg={GetDifficultyColor(content)}>{GetDifficultyName(content)}</Badge>
+            <Badge className={"DifficultyBadge"} pill
+                   bg={GetDifficultyColor(content)}>{GetDifficultyName(content)}</Badge>
         </div>
     )
 }
@@ -55,17 +59,21 @@ function QuestionBoxBody({content}) {
 }
 
 function QuestionBoxAnswer({content, onChanged}) {
+    const handleOnChanged = (answer) => {
+        onChanged(answer);
+    }
+
     switch (content.type) {
-        // case 0:
-        //     return <SingleAnswer list={content.answer}/>;
-        // case 1:
-        //     return <MultipleAnswer list={content.answer}/>;
-        // case 2:
-        //     return <SequenceAnswer list={content.answer}/>;
+        case 0:
+            return <SingleAnswer list={content.answer} onChanged={handleOnChanged}/>;
+        case 1:
+            return <MultipleAnswer list={content.answer} onChanged={handleOnChanged}/>;
+        case 2:
+            return <SequenceAnswer list={content.answer} onChanged={handleOnChanged}/>;
         case 3:
-            return <MatchAnswer staticIndexed={makeIndexed(makeCheckable(content.answer.staticList))}
-                                draggableIndexed={makeIndexed(makeCheckable(content.answer.draggableList))}
-                                onChanged={onChanged}/>
+            return <MatchAnswer staticList={content.answer.staticList}
+                                draggableList={content.answer.draggableList}
+                                onChanged={handleOnChanged}/>
     }
 }
 

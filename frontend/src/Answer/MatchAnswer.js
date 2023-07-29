@@ -3,11 +3,11 @@ import Col from "react-bootstrap/Col";
 import React from "react";
 import {Indexed} from "../List/Indexed";
 import {DraggableIndexed} from "../List/DraggableIndexed";
-import {makeCheckable, makeIndexed, makeRef} from "../List/List";
+import {makeIndexed, makeRef} from "../List/List";
 
-export function MatchAnswer({staticIndexed, draggableIndexed, onChanged}) {
-    const staticIndexedRef = makeRef(staticIndexed);
-    const draggableIndexedRef = makeRef(draggableIndexed);
+export function MatchAnswer({staticList, draggableList, onChanged}) {
+    const staticIndexedRef = makeRef(makeIndexed(staticList));
+    const draggableIndexedRef = makeRef(makeIndexed(draggableList));
 
     const handleOnChanged = () => {
         onChanged({
