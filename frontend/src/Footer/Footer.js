@@ -1,6 +1,6 @@
 import Nav from 'react-bootstrap/Nav';
 import "./Footer.css"
-function TestFooter() {
+function AppFooter() {
     return (
 
             <Nav defaultActiveKey="/home" className="flex-column justify-content-center FooterNav">
@@ -14,4 +14,4 @@ function TestFooter() {
     );
 }
 
-export default TestFooter;
+export default AppFooter;

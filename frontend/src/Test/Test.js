@@ -2,7 +2,7 @@ import './Test.css';
 import '../QuestionBox/QuestionBox.css'
 import {GetQuestionBoxContent, QuestionBox} from "../QuestionBox/QuestionBox";
 import './Test.css';
-import TestFooter from "../Footer/Footer";
+import AppFooter from "../Footer/Footer";
 import React from "react";
 
 
@@ -10,7 +10,7 @@ function Test(props) {
     return (
         <div className={"Test"}>
             <TestMain name={props.name} questions={props.questions} className={"content"}/>
-            <TestFooter/>
+            <AppFooter/>
         </div>
     )
 }
