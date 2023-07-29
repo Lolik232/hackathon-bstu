@@ -22,7 +22,7 @@ type repository struct {
 }
 
 func (r repository) Create(ctx context.Context, p *Discipline) error {
-	q := `INSERT INTO discipline (name) VALUES ('Философия') RETURNING id`
+	q := `INSERT INTO discipline (name) VALUES ($1) RETURNING id`
 
 	if err := r.client.QueryRow(ctx, q, p.Name).Scan(&p.Name); err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok {
@@ -38,7 +38,7 @@ func (r repository) Create(ctx context.Context, p *Discipline) error {
 }
 
 func (r repository) FindAll(ctx context.Context) (p []Discipline, err error) {
-	q := `SELECT  id,name FROM discipline`
+	q := `SELECT id,name FROM discipline`
 
 	rows, err := r.client.Query(ctx, q)
 	if err != nil {
