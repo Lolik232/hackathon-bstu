@@ -4,11 +4,11 @@ import (
 	"context"
 	"github.com/Lolik232/hackathon-bstu/config"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type Client interface {
-	Exec(ctx context.Context, sql string, arg ...interface{}) (pgxpool.Pool, error)
+	Exec(ctx context.Context, sql string, arg ...interface{}) (pgconn.CommandTag, error)
 	Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error)
 	QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row
 	Begin(ctx context.Context) (pgx.Tx, error)

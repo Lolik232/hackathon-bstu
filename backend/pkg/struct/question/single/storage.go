@@ -1,4 +1,4 @@
-package question
+package sinlge
 
 import (
 	"context"
@@ -21,11 +21,13 @@ type repository struct {
 	logger *slog.Logger
 }
 
-func (r repository) Create(ctx context.Context, c *Single) error {
-	q := `INSERT INTO competence (name_сategory, competency_code, name_competence, indicator_code, indicator_name) 
-			VALUES ($1,$2,$3,$4,$5) RETURNING id`
+func (r repository) Create(ctx context.Context, s *Single) error {
+	q := `INSERT INTO single (body, answers, correct_ans, estimation, eomplexity,id_discipline,id_competence)
+VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id`
 
-	if err := r.client.QueryRow(ctx, q, c.NameCategory, c.CompetencyCode, c.NameUniversalCompetence, c.IndicatorCode, c.IndicatorName).Scan(&c.Id); err != nil {
+	if err := r.client.QueryRow(
+		ctx, q, s.QuestionBody, s.Answers, s.CorrectAnswer, s.Estimation, s.Complexity, s.IdDiscipline, s.IdCompetence).
+		Scan(&s.Id); err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok {
 			newErr := fmt.Errorf(fmt.Sprintf("SQL Error: %s\n Detail: %s\n Where: %s\n Code: %s\n SQLState: %s\n",
 				pgErr.Message, pgErr.Detail, pgErr.Where, pgErr.Code, pgErr.SQLState()))
@@ -38,45 +40,45 @@ func (r repository) Create(ctx context.Context, c *Single) error {
 	return nil
 }
 
-func (r repository) FindAll(ctx context.Context) (c []Competence, err error) {
-	q := `select id,name_сategory, competency_code, name_competence, indicator_code, indicator_name FROM competence`
+func (r repository) FindAll(ctx context.Context) (c []Single, err error) {
+	q := `select id,body, answers, correct_ans, estimation, eomplexity,id_discipline,id_competence FROM competence`
 
 	rows, err := r.client.Query(ctx, q)
 	if err != nil {
 		return nil, err
 	}
 
-	disciplines := make([]Competence, 0)
+	singles := make([]Single, 0)
 	for rows.Next() {
-		var c Competence
+		var s Single
 
-		err := rows.Scan(&c.Id, &c.NameCategory, &c.CompetencyCode, &c.NameUniversalCompetence, &c.IndicatorCode, &c.IndicatorName)
+		err := rows.Scan(&s.Id, &s.Answers, &s.CorrectAnswer, &s.Estimation, &s.Complexity, &s.IdDiscipline, &s.IdCompetence)
 		if err != nil {
 			return nil, err
 		}
 
-		disciplines = append(disciplines, c)
+		singles = append(singles, s)
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return disciplines, nil
+	return singles, nil
 }
 
-func (r repository) FindOne(ctx context.Context, id int) (Competence, error) {
-	q := `SELECT id,name_сategory, competency_code, name_competence, indicator_code, indicator_name FROM competence WHERE id = $1`
+func (r repository) FindOne(ctx context.Context, id int) (Single, error) {
+	q := `select id,body, answers, correct_ans, estimation, eomplexity,id_discipline,id_competence FROM competence WHERE id = $1`
 
-	var c Competence
-	err := r.client.QueryRow(ctx, q, id).Scan(&c.Id, &c.NameCategory, &c.CompetencyCode, &c.NameUniversalCompetence, &c.IndicatorCode, &c.IndicatorName)
+	var s Single
+	err := r.client.QueryRow(ctx, q, id).Scan(&s.Id, &s.Answers, &s.CorrectAnswer, &s.Estimation, &s.Complexity, &s.IdDiscipline, &s.IdCompetence)
 	if err != nil {
-		return Competence{}, nil
+		return Single{}, nil
 	}
-	return c, nil
+	return s, nil
 }
 
-func (r repository) Update(ctx context.Context, c Competence) error {
+func (r repository) Update(ctx context.Context, c Single) error {
 	//TODO implement me
 	panic("implement me")
 }
