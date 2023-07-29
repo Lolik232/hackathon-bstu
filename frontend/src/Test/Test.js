@@ -48,6 +48,14 @@ function TestQuestionList() {
                 ["Много", "Мало", "Гоголев"],
                 2, 23, 214)}
                          onChanged={handleOnChanged}/>
+            <QuestionBox content={GetQuestionBoxContent(5, "Как?",
+                [],
+                1, 23, 12412)}
+                         onChanged={handleOnChanged}/>
+            <QuestionBox content={GetQuestionBoxContent(4, "Вы кто такие? ",
+                [],
+                2, 345, 123124)}
+                         onChanged={handleOnChanged}/>
             <QuestionBox content={GetQuestionBoxContent(3, "Где?", {
                 staticList: ["Саня", "Степа", "Гоголев"],
                 draggableList: ["Сколько?", "Фурри", "Танки"]

@@ -5,6 +5,8 @@ import {makeCheckable, makeIndexed, makeRef} from "../List/List";
 import {SingleAnswer} from "../Answer/SingleAnswer";
 import {MultipleAnswer} from "../Answer/MultipleAnswer";
 import {SequenceAnswer} from "../Answer/SequenceAnswer";
+import {LongAnswer} from "../Answer/LongAnswer";
+import {ComplementAnswer} from "../Answer/ComplementAnswer";
 
 export function GetQuestionBoxContent(type, question, answer, difficulty, cost, hash) {
     return {
@@ -74,6 +76,10 @@ function QuestionBoxAnswer({content, onChanged}) {
             return <MatchAnswer staticList={content.answer.staticList}
                                 draggableList={content.answer.draggableList}
                                 onChanged={handleOnChanged}/>
+        case 4:
+            return <ComplementAnswer onChanged={handleOnChanged}/>
+        case 5:
+            return <LongAnswer onChanged={handleOnChanged}/>
     }
 }
 
