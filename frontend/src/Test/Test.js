@@ -10,15 +10,7 @@ function Test(props) {
     return (
         <div className={"Test"}>
             <TestMain name={props.name} questions={props.questions} className={"content"}/>
-            <TestFooter/>
         </div>
-    )
-}
-
-function TestHeader() {
-    return (
-        <header className="Test_Header">
-        </header>
     )
 }
 

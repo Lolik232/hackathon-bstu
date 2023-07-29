@@ -11,11 +11,13 @@ import {
 
 import Test from "./Test/Test";
 import TestFooter from "./Footer/Footer";
+import AppHeader from "./Header/AppHeader";
 
 function App() {
     return (
         <div>
-            <Test name={"First Test"} questions={[]}/>
+            <AppHeader/>
+            <Test questions={[]}/>
             <TestFooter/>
         </div>
     );
