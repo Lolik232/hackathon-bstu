@@ -3,7 +3,8 @@
 }
 
 .Test {
-    background-color: #d6e2f5;
+    min-height:100%;
+    position:relative;
 }
 
 @font-face {
@@ -23,7 +24,7 @@
 }
 
 .TestQuestionList {
-    width: 1270px;
+    width: 100%;
 }
 
 .endButton {
@@ -36,4 +37,9 @@
     width: 130px;
     height: 50px;
     font-family: Open Sans, sans-serif;
+}
+
+.content {
+    min-height: calc(100vh - 200px);
+    /* 80px header + 40px footer = 120px  */
 }
