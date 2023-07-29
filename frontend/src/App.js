@@ -12,14 +12,12 @@ import {
 import Test from "./Test/Test";
 import TestFooter from "./Footer/Footer";
 import AppHeader from "./Header/AppHeader";
+import {Route, Routes} from "react-router-dom";
 
 function App() {
     return (
-        <div>
-            <AppHeader/>
-            <Test questions={[]}/>
-            <TestFooter/>
-        </div>
+        <>
+        </>
     );
 }
 

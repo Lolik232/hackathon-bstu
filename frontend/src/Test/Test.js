@@ -4,13 +4,18 @@ import {GetQuestionBoxContent, QuestionBox} from "../QuestionBox/QuestionBox";
 import './Test.css';
 import TestFooter from "../Footer/Footer";
 import React from "react";
+import AppHeader from "../Header/AppHeader";
 
 
 function Test(props) {
     return (
-        <div className={"Test"}>
-            <TestMain name={props.name} questions={props.questions} className={"content"}/>
-        </div>
+        <>
+            <AppHeader/>
+            <div className={"Test"}>
+                <TestMain name={props.name} questions={props.questions} className={"content"}/>
+            </div>
+            <TestFooter/>
+        </>
     )
 }
 
