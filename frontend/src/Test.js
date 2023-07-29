@@ -3,22 +3,19 @@ import {GetQuestionBoxContent, QuestionBox} from "./QuestionBox";
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button';
+import TestFooter from "./Footer";
+import './Test.css';
+
 
 function Test(props) {
     return (
 
-        <body className={Test}>
-        <Form>
-            <Row>
-                <Col>
-                    <TestHeader/>
+        <body className={"Test"}>
+        <article className={"content"} >
                     <TestMain name={props.name} questions={props.questions}/>
-                </Col>
-                <Col>
-                    <TestNavigationForm/>
-                </Col>
-            </Row>
-        </Form>
+        </article>
+        <footer ><TestFooter></TestFooter></footer>
         </body>
     )
 }
