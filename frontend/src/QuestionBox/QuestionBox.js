@@ -1,9 +1,12 @@
 import React from "react";
 import {Badge, Card, Container} from "react-bootstrap";
+import {MatchAnswer} from "../Answer/MatchAnswer";
+import {makeCheckable, makeIndexed, makeRef} from "../List/List";
 import {SingleAnswer} from "../Answer/SingleAnswer";
 import {MultipleAnswer} from "../Answer/MultipleAnswer";
 import {SequenceAnswer} from "../Answer/SequenceAnswer";
-import {MatchAnswer} from "../Answer/MatchAnswer";
+import {LongAnswer} from "../Answer/LongAnswer";
+import {ComplementAnswer} from "../Answer/ComplementAnswer";
 
 export function GetQuestionBoxContent(type, question, answer, difficulty, cost, hash) {
     return {
@@ -16,7 +19,11 @@ export function GetQuestionBoxContent(type, question, answer, difficulty, cost, 
     }
 }
 
-export function QuestionBox({content}) {
+export function QuestionBox({content, onChanged}) {
+    const handleOnChanged = (answer) => {
+        onChanged({id: content.hash, answer: answer})
+    }
+
     return (
         <Container className="CardBox">
             <Card>
@@ -25,7 +32,7 @@ export function QuestionBox({content}) {
                 </Card.Header>
                 <Card.Body>
                     <QuestionBoxBody content={content}/>
-                    <QuestionBoxAnswer content={content}/>
+                    <QuestionBoxAnswer content={content} onChanged={handleOnChanged}/>
                 </Card.Body>
                 <Card.Footer>
                     <QuestionBoxFooter content={content}/>
@@ -39,7 +46,8 @@ function QuestionBoxHeader({content}) {
     return (
         <div className="d-flex justify-content-between">
             <i>{GetQuestionTypeName(content)}</i>
-            <Badge pill bg={GetDifficultyColor(content)}>{GetDifficultyName(content)}</Badge>
+            <Badge className={"DifficultyBadge"} pill
+                   bg={GetDifficultyColor(content)}>{GetDifficultyName(content)}</Badge>
         </div>
     )
 }
@@ -52,16 +60,26 @@ function QuestionBoxBody({content}) {
     )
 }
 
-function QuestionBoxAnswer({content}) {
+function QuestionBoxAnswer({content, onChanged}) {
+    const handleOnChanged = (answer) => {
+        onChanged(answer);
+    }
+
     switch (content.type) {
         case 0:
-            return <SingleAnswer list={content.answer}/>;
+            return <SingleAnswer list={content.answer} onChanged={handleOnChanged}/>;
         case 1:
-            return <MultipleAnswer list={content.answer}/>;
+            return <MultipleAnswer list={content.answer} onChanged={handleOnChanged}/>;
         case 2:
-            return <SequenceAnswer list={content.answer}/>;
+            return <SequenceAnswer list={content.answer} onChanged={handleOnChanged}/>;
         case 3:
-            return <MatchAnswer staticList={content.answer[0]} draggableList={content.answer[1]}/>;
+            return <MatchAnswer staticList={content.answer.staticList}
+                                draggableList={content.answer.draggableList}
+                                onChanged={handleOnChanged}/>
+        case 4:
+            return <ComplementAnswer onChanged={handleOnChanged}/>
+        case 5:
+            return <LongAnswer onChanged={handleOnChanged}/>
     }
 }
 

@@ -1,58 +1,55 @@
-export function GetNumeratedList(list) {
-    for (const i in list) {
-        list[i] = {value: list[i], index: i};
-    }
-
-    return list;
+const listCopy = (value) => {
+    return [...value]
 }
 
-export function GetCheckableNumeratedList(list) {
-    for (const i in list) {
-        list[i] = {value: list[i], index: i, checked: false};
-    }
+const makeObjectList = (list) => {
+    let objectList = listCopy(list);
+    for (const i in objectList)
+        if (typeof objectList[i] === 'object' && objectList[i] !== null)
+            objectList[i] = {...objectList[i]}
+        else
+            objectList[i] = {value: objectList[i]}
 
-    return ToggleListItem;
-
-    function ToggleListItem(index = undefined) {
-        if (index === undefined) return list;
-
-        list[index].checked = !list[index].checked;
-        return ToggleListItem;
-    }
+    return objectList;
 }
 
-export function GetRadioNumeratedList(list) {
-    for (const i in list) {
-        list[i] = {value: list[i], index: i, checked: false};
-    }
-
-    return ChooseListItem;
-
-    function ChooseListItem(index = undefined) {
-        if (index === undefined) return list;
-
-        for (let item of list) {
-            item.checked = false;
-        }
-
-        list[index].checked = true;
-        return ChooseListItem;
-    }
+export const makeRef = (value) => {
+    return {ref: value}
 }
 
-export function GetDraggableNumeratedList(list) {
-    for (const i in list) {
-        list[i] = {value: list[i], index: i};
-    }
+export const makeIndexed = (list) => {
+    let indexed = makeObjectList(list);
+    for (const i in indexed)
+        indexed[i] = {...indexed[i], index: i}
 
-    return DragListItem;
 
-    function DragListItem(from = undefined, to = undefined) {
-        if (from === to) return list;
+    return indexed;
+}
 
-        const [dragged] = list.splice(from, 1);
-        list.splice(to, 0, dragged);
+export const makeCheckable = (list) => {
+    let checkable = makeObjectList(list);
+    for (const i in checkable)
+        checkable[i] = {...checkable[i], checked: false}
 
-        return DragListItem;
-    }
+
+    return checkable;
+}
+
+export function toggleCheckableItem(checkableRef, i) {
+    checkableRef.ref[i].checked = !checkableRef.ref[i].checked
+}
+
+export function chooseCheckableItem(checkableRef, i) {
+    for (const i in checkableRef.ref)
+        checkableRef.ref[i].checked = false;
+
+
+    checkableRef.ref[i].checked = true;
+}
+
+export function dragIndexedItem(indexedRef, from, to) {
+    if (from === to) return;
+
+    const [dragged] = indexedRef.ref.splice(from, 1);
+    indexedRef.ref.splice(to, 0, dragged);
 }

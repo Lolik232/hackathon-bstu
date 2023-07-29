@@ -1,18 +1,28 @@
-import {GetDraggableNumeratedList, GetNumeratedList} from "../List/List";
-import {DraggableNumeratedListGroup} from "../List/DraggableNumeratedListGroup";
-import {NumeratedListGroup} from "../List/NumeratedListGroup";
-
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import React from "react";
+import {Indexed} from "../List/Indexed";
+import {DraggableIndexed} from "../List/DraggableIndexed";
+import {makeIndexed, makeRef} from "../List/List";
 
-export function MatchAnswer({staticList = [], draggableList = []}) {
+export function MatchAnswer({staticList, draggableList, onChanged}) {
+    const staticIndexedRef = makeRef(makeIndexed(staticList));
+    const draggableIndexedRef = makeRef(makeIndexed(draggableList));
+
+    const handleOnChanged = () => {
+        onChanged({
+            static: staticIndexedRef.ref.map(item => item.index),
+            draggable: draggableIndexedRef.ref.map(item => item.index)
+        })
+    }
+
     return (<Row>
         <Col>
-            <NumeratedListGroup list={GetNumeratedList(Array.from(staticList))}/>
+            <Indexed indexedRef={staticIndexedRef}/>
         </Col>
         <Col>
-            <DraggableNumeratedListGroup list={GetDraggableNumeratedList(Array.from(draggableList))}/>
+            <DraggableIndexed indexedRef={draggableIndexedRef} onChanged={handleOnChanged}/>
         </Col>
     </Row>)
-
 }
+
