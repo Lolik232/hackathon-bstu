@@ -1,11 +1,13 @@
+.Footer {
+    position: absolute;
+    bottom: 0;
+}
 
 .FooterNav {
     text-align: center;
     background-color: #122d52;
     font-family: Open Sans, sans-serif;
     width: 100%;
-    position: absolute;
-
 }
 
 

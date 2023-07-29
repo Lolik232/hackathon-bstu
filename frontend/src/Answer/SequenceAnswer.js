@@ -1,6 +1,6 @@
-// import {DraggableNumeratedListGroup} from "../List/DraggableNumeratedListGroup";
+// import {DraggableIndexed} from "../List/DraggableIndexed";
 // import {GetDraggableNumeratedList} from "../List/NumeratedList";
 //
 // export function SequenceAnswer({list = []}) {
-//     return <DraggableNumeratedListGroup list={GetDraggableNumeratedList(Array.from(list))}/>
+//     return <DraggableIndexed list={GetDraggableNumeratedList(Array.from(list))}/>
 // }
