@@ -8,13 +8,13 @@
 
 @font-face {
     font-family: "PFCentroSlabProMedium";
-    src: url("./resources/PFCentroSlabProMedium/PFCentroSlabProMedium.woff");
+    src: url("../resources/PFCentroSlabProMedium/PFCentroSlabProMedium.woff");
 }
 
 .TestName {
     font-size: 20px;
     padding-left: 20px;
-    font-family: "PFCentroSlabProMedium";
+    font-family: "PFCentroSlabProMedium", serif;
 }
 
 .TestNavigationForm {

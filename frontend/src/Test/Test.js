@@ -1,13 +1,12 @@
 import './Test.css';
-import {GetQuestionBoxContent, QuestionBox} from "./QuestionBox";
+import '../QuestionBox/QuestionBox.css'
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import {GetQuestionBoxContent, QuestionBox} from "../QuestionBox/QuestionBox";
 
 function Test(props) {
     return (
-
-        <body className={Test}>
         <Form>
             <Row>
                 <Col>
@@ -19,7 +18,6 @@ function Test(props) {
                 </Col>
             </Row>
         </Form>
-        </body>
     )
 }
 
@@ -42,16 +40,10 @@ function TestName(props) {
 function TestQuestionList(props) {
     return (
         <div className="TestQuestionList">
-            <QuestionBox
-                content={GetQuestionBoxContent(2, "Самый крутой вопрос в мире от самое длинной письки в мире", ["my dick is big", "oh, myy", "afdsasd"], 0, 2, '3123')}/>
-            <QuestionBox
-                content={GetQuestionBoxContent(1, "Самый крутой вопрос в мире от самое длинной письки в мире", ["my dick is big", "oh, myy"], 1, 1, 'йцуйцу')}/>
-            <QuestionBox
-                content={GetQuestionBoxContent(0, "Самый крутой вопрос в мире от самое длинной письки в мире", ["my dick is big", "oh, myy"], 2, 5, 'йуцйцуй')}/>
-            <ul>
-                {props.questions.map((obj) => <li key={obj}>{obj}</li>)
-                }
-            </ul>
+            <QuestionBox content={GetQuestionBoxContent(0, "Сколько?", ["Много", "Мало", "Гоголев"], 1, 1, 123)}/>
+            <QuestionBox content={GetQuestionBoxContent(1, "Сколько?", ["Много", "Мало", "Гоголев"], 0, 5, 124)}/>
+            <QuestionBox content={GetQuestionBoxContent(2, "Сколько?", ["Много", "Мало", "Гоголев"], 2, 23, 214)}/>
+            <QuestionBox content={GetQuestionBoxContent(3, "Где?", [["Саня", "Степа", "Гоголев"], ["Сколько?", "Фурри", "Танки"]], 1, 5, 1244)}/>
         </div>
     )
 }
