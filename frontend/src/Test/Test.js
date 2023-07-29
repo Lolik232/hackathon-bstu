@@ -4,19 +4,18 @@ import {GetQuestionBoxContent, QuestionBox} from "../QuestionBox/QuestionBox";
 import './Test.css';
 import AppFooter from "../Footer/AppFooter";
 import React from "react";
-import {createNumeratedList, CreateObject, makeCheckable, makeIndexed, makeRef} from "../List/List";
+import AppHeader from "../Header/AppHeader";
 
 
 function Test(props) {
     return (
-        <TestMain name={props.name} questions={props.questions}/>
-    )
-}
-
-function TestHeader() {
-    return (
-        <header className="TestHeader">
-        </header>
+        <>
+            <AppHeader/>
+            <div className={"Test"}>
+                <TestMain name={props.name} questions={props.questions} className={"content"}/>
+            </div>
+            <AppFooter/>
+        </>
     )
 }
 
