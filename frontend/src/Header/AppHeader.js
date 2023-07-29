@@ -21,7 +21,6 @@ export const AppHeader = () => {
                     </Navbar.Brand>
 
                     <Navbar className={"justify-content-end"} onSelect={(eventKey) => {
-                        eventKey === "username-nav-pressed" && alert("hui");
                         eventKey === "show-offcanvas" && handleShow();
 
                     }}>
@@ -32,7 +31,7 @@ export const AppHeader = () => {
                                 </Nav.Link>
                             </Nav.Item>
 
-                            <UserPanel name={"Хуеглотов Д.Г."}/>
+                            <UserPanel name={"Иванов И.И."} status={"Студент"}/>
 
                         </Nav>
                     </Navbar>
