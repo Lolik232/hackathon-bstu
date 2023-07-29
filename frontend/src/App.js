@@ -10,7 +10,7 @@ import {
 } from "./List/List";
 
 import Test from "./Test/Test";
-import TestFooter from "./Footer";
+import TestFooter from "./Footer/Footer";
 
 function App() {
     return (

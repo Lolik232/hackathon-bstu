@@ -1,23 +1,17 @@
 import './Test.css';
 import '../QuestionBox/QuestionBox.css'
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
 import {GetQuestionBoxContent, QuestionBox} from "../QuestionBox/QuestionBox";
-import Button from 'react-bootstrap/Button';
-import TestFooter from "./Footer";
 import './Test.css';
+import TestFooter from "../Footer/Footer";
+import React from "react";
 
 
 function Test(props) {
     return (
-
-        <body className={"Test"}>
-        <article className={"content"} >
-                    <TestMain name={props.name} questions={props.questions}/>
-        </article>
-        <footer ><TestFooter></TestFooter></footer>
-        </body>
+        <div className={"Test"}>
+            <TestMain name={props.name} questions={props.questions} className={"content"}/>
+            <TestFooter/>
+        </div>
     )
 }
 
@@ -29,15 +23,15 @@ function TestHeader() {
 }
 
 
-function TestName(props) {
+function TestName({name}) {
     return (
         <div className={"TestName"}>
-            <h2>{props.name}</h2>
+            <h2>{name}</h2>
         </div>
     )
 }
 
-function TestQuestionList(props) {
+function TestQuestionList() {
     return (
         <div className="TestQuestionList">
             <QuestionBox content={GetQuestionBoxContent(0, "Сколько?", ["Много", "Мало", "Гоголев"], 1, 1, 123)}/>
@@ -58,10 +52,10 @@ function TestNavigationForm(props) {
 
 function TestMain(props) {
     return (
-        <main>
+        <div>
             <TestName name={props.name}/>
             <TestQuestionList questions={props.questions}/>
-        </main>
+        </div>
     )
 }
 
