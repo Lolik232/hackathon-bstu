@@ -1,0 +1,42 @@
+.Test {
+    min-height:100%;
+    position:relative;
+    margin-top: 101px;
+}
+
+@font-face {
+    font-family: "PFCentroSlabProMedium";
+    src: url("../resources/PFCentroSlabProMedium/PFCentroSlabProMedium.woff");
+}
+
+.TestName {
+    font-size: 20px;
+    padding-left: 20px;
+    font-family: "PFCentroSlabProMedium", serif;
+}
+
+.TestNavigationForm {
+    padding-top: 35px;
+    position: fixed;
+}
+
+.TestQuestionList {
+    width: 100%;
+}
+
+.endButton {
+    background-color: #00a9ec;
+    appearance: none;
+    border: 0;
+    border-radius: 7px;
+    color: #fff;
+    font-size: 16px;
+    width: 130px;
+    height: 50px;
+    font-family: Open Sans, sans-serif;
+}
+
+.Content {
+    min-height: calc(100vh - 200px);
+    /* 80px header + 40px footer = 120px  */
+}

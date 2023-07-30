@@ -1,0 +1,11 @@
+@media all and (min-width: 480px) {
+    .Login {
+        padding: 60px 0;
+    }
+
+    .LoginBox{
+        margin: 15px; /* внешний отступ */
+        padding: 11px; /* внутренний отступ */
+        border: 3px solid red; /* границы шириной в 3 пикселя сплошной красной линией */
+    }
+}
