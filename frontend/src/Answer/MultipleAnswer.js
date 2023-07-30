@@ -1,12 +1,5 @@
-import {CheckBoxIndexed} from "../List/CheckableIndexed";
-import {makeCheckable, makeIndexed, makeRef} from "../List/List";
+import {CheckBoxIndexed} from "../List/MyCheckable";
 
-export function MultipleAnswer({list, onChanged}) {
-    const checkableIndexedRef = makeRef(makeCheckable(makeIndexed(list)));
-
-    const handleOnChanged = () => {
-        onChanged(checkableIndexedRef.ref.filter(item => item.checked).map(item => item.index))
-    }
-
-    return <CheckBoxIndexed checkableIndexedRef={checkableIndexedRef} onChanged={handleOnChanged}/>
+export function MultipleAnswer({answerRef}) {
+    return <CheckBoxIndexed checkableIndexedRef={answerRef}/>
 }

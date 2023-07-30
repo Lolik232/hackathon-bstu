@@ -1,9 +1,9 @@
 import {FormControl} from "react-bootstrap";
 
-export const ComplementAnswer = ({onChanged}) => {
+export const ComplementAnswer = ({answerRef}) => {
     const handleOnChanged = (event) => {
-        onChanged(event.target.value)
+        answerRef.ref = event.target.value;
     }
 
-    return <FormControl as="input" onChange={handleOnChanged} placeholder={"Дополните ответ..."}/>
+    return <FormControl as="input" onChange={handleOnChanged} placeholder={"Дополните фразу..."}/>
 }

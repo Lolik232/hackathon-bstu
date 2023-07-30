@@ -9,8 +9,8 @@ const makeObjectList = (list) => {
             objectList[i] = {...objectList[i]}
         else
             objectList[i] = {value: objectList[i]}
-
     return objectList;
+
 }
 
 export const makeRef = (value) => {
@@ -18,19 +18,30 @@ export const makeRef = (value) => {
 }
 
 export const makeIndexed = (list) => {
-    let indexed = makeObjectList(list);
+    let indexed = listCopy(list);
+    let indexes = [];
     for (const i in indexed)
-        indexed[i] = {...indexed[i], index: i}
+        indexes[i] = i;
 
+    shuffle(indexes);
+    for (const i in indexed)
+        indexed[i] = {value: indexed[i], index: indexes[i]};
 
     return indexed;
+}
+
+const  shuffle = (array) =>  {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1)); // случайный индекс от 0 до i
+
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
 export const makeCheckable = (list) => {
     let checkable = makeObjectList(list);
     for (const i in checkable)
-        checkable[i] = {...checkable[i], checked: false}
-
+        checkable[i] = {...checkable[i], checked: Boolean(false)}
 
     return checkable;
 }
