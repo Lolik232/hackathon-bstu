@@ -52,35 +52,6 @@ func (r repository) FindAll(ctx context.Context) (c []Competence, err error) {
 		return nil, err
 	}
 
-	/*
-		в pgx есть удобные функции для преобразования всего этого дела
-		оно может ещё и работать с тэгами(без них парсит подряд) из
-		стандартной библиотеки
-
-		type User struct {
-			ID int `db:"id"` - пример
-		}
-	*/
-
-	/*
-		disciplines := make([]Competence, 0)
-
-		for rows.Next() {
-			var c Competence
-
-			err := rows.Scan(&c.Id, &c.NameCategory, &c.CompetencyCode, &c.NameUniversalCompetence, &c.IndicatorCode, &c.IndicatorName)
-			if err != nil {
-				return nil, err
-			}
-
-			disciplines = append(disciplines, c)
-		}
-
-		if err := rows.Err(); err != nil {
-			return nil, err
-		}
-	*/
-
 	disciplines, err := pgx.CollectRows(rows, pgx.RowToStructByName[Competence])
 
 	if err != nil {
