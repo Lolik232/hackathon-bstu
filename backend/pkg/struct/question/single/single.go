@@ -1,10 +1,11 @@
-package sinlge
+package question
 
 // Single - вопрос закрытого типа  с одиночным выбором.
 // Реализует интерефейс - IQuestion.
 type Single struct {
 	Id            int      `json:"id"`             // id для хранения в бд
 	QuestionBody  string   `json:"question_body"`  // Сам вопрос
+	Explanation   string   `json:"explanation"`    // Пояснение вопроса
 	Answers       []string `json:"answers"`        // Варианты ответов
 	CorrectAnswer int      `json:"correct_answer"` // Правильный ответ, место в Answers[]
 	Estimation    int      `json:"estimation"`     // Баллы за вопрос

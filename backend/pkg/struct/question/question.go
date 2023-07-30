@@ -4,4 +4,5 @@ package question
 type IQuestion interface {
 	// TODO create func
 	AddToDB(q *IQuestion)
+	JSON2Question(jsonStr []byte, qStruct IQuestion)
 }
