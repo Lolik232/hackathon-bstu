@@ -2,38 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import Test from "./Test/Test";
 import reportWebVitals from './reportWebVitals';
 import {
-    createBrowserRouter,
-    RouterProvider,
+    BrowserRouter,
 } from "react-router-dom";
-import {QuestionBoxEditor} from "./QuestionBoxEditor/QuestionBoxEditor";
-
-import Login from "./Login/Login";
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <App/>
-    },
-    {
-        path: "/test",
-        element: <Test/>
-    },
-    {
-        path: "/question-editor",
-        element: <QuestionBoxEditor/>
-    },
-    {
-        path: "/login",
-        element: <Login/>
-    }
-]);
+import {AuthProvider} from "react-auth-kit";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <RouterProvider router={router} />
+      <AuthProvider authType={"cookie"} authName={"_auth"} cookieDomain={window.location.hostname}>
+          <BrowserRouter>
+              <App/>
+          </BrowserRouter>
+      </AuthProvider>
   </React.StrictMode>
 );
 
