@@ -3,7 +3,9 @@ package competence
 import (
 	"context"
 	"fmt"
+
 	"github.com/Lolik232/hackathon-bstu/storage/pgSQL"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/exp/slog"
 )
@@ -16,9 +18,13 @@ type Repository interface {
 	Delete(ctx context.Context, id int) error
 }
 
+// лучше вынести реализацию репозитория в отдельный пакет с конкретной реализацией
+// например, в папке competence создать папку storage,
+// а в ней подпапки с пакетами конкретной реализации
+// competence/postgres competence/mongo и т.д.
 type repository struct {
 	client pgSQL.Client
-	logger *slog.Logger
+	logger *slog.Logger // слог это хорошо
 }
 
 func (r repository) Create(ctx context.Context, c *Competence) error {
@@ -39,26 +45,45 @@ func (r repository) Create(ctx context.Context, c *Competence) error {
 }
 
 func (r repository) FindAll(ctx context.Context) (c []Competence, err error) {
-	q := `select id,name_сategory, competency_code, name_competence, indicator_code, indicator_name FROM competence`
+	q := `select id, name_сategory, competency_code, name_competence, indicator_code, indicator_name FROM competence`
 
 	rows, err := r.client.Query(ctx, q)
 	if err != nil {
 		return nil, err
 	}
 
-	disciplines := make([]Competence, 0)
-	for rows.Next() {
-		var c Competence
+	/*
+		в pgx есть удобные функции для преобразования всего этого дела
+		оно может ещё и работать с тэгами(без них парсит подряд) из
+		стандартной библиотеки
 
-		err := rows.Scan(&c.Id, &c.NameCategory, &c.CompetencyCode, &c.NameUniversalCompetence, &c.IndicatorCode, &c.IndicatorName)
-		if err != nil {
-			return nil, err
+		type User struct {
+			ID int `db:"id"` - пример
+		}
+	*/
+
+	/*
+		disciplines := make([]Competence, 0)
+
+		for rows.Next() {
+			var c Competence
+
+			err := rows.Scan(&c.Id, &c.NameCategory, &c.CompetencyCode, &c.NameUniversalCompetence, &c.IndicatorCode, &c.IndicatorName)
+			if err != nil {
+				return nil, err
+			}
+
+			disciplines = append(disciplines, c)
 		}
 
-		disciplines = append(disciplines, c)
-	}
+		if err := rows.Err(); err != nil {
+			return nil, err
+		}
+	*/
 
-	if err := rows.Err(); err != nil {
+	disciplines, err := pgx.CollectRows(rows, pgx.RowToStructByName[Competence])
+
+	if err != nil {
 		return nil, err
 	}
 
@@ -68,11 +93,18 @@ func (r repository) FindAll(ctx context.Context) (c []Competence, err error) {
 func (r repository) FindOne(ctx context.Context, id int) (Competence, error) {
 	q := `SELECT id,name_сategory, competency_code, name_competence, indicator_code, indicator_name FROM competence WHERE id = $1`
 
-	var c Competence
-	err := r.client.QueryRow(ctx, q, id).Scan(&c.Id, &c.NameCategory, &c.CompetencyCode, &c.NameUniversalCompetence, &c.IndicatorCode, &c.IndicatorName)
+	/*
+		var c Competence
+		err := r.client.QueryRow(ctx, q, id).Scan(&c.Id, &c.NameCategory, &c.CompetencyCode, &c.NameUniversalCompetence, &c.IndicatorCode, &c.IndicatorName)
+	*/
+
+	row, _ := r.client.Query(ctx, q, id)
+	c, err := pgx.CollectOneRow(row, pgx.RowToStructByName[Competence])
+
 	if err != nil {
 		return Competence{}, nil
 	}
+
 	return c, nil
 }
 
