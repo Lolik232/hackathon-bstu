@@ -1,9 +1,10 @@
-import {Button, Card, Container, FloatingLabel, Form, FormLabel, ListGroup} from "react-bootstrap";
+import {Button, Card, CloseButton, Container, FloatingLabel, Form, FormLabel, ListGroup} from "react-bootstrap";
 import Select from 'react-select';
 import React from "react";
 import "./EditableQuestionBox.css";
 import {SingleAnswer} from "../Answer/SingleAnswer";
 import {makeCheckable, makeIndexed, makeRef} from "../List/List";
+import {MultipleAnswer} from "../Answer/MultipleAnswer";
 
 export function EditableQuestionBox() {
 
@@ -16,7 +17,7 @@ export function EditableQuestionBox() {
                 <Card.Body>
                     <QuestionBoxBodyQuestion/>
                     <QuestionBoxBodyAnnotation/>
-                    <QuestionBoxBodyAnswer/>
+                    <QuestionBoxBodyMultipleAnswer/>
                 </Card.Body>
                 <Card.Footer>
                     <QuestionBoxBodyFooter/>
@@ -66,37 +67,80 @@ function QuestionBoxBodyAnnotation() {
     )
 }
 
-const QuestionBoxBodyAnswer = () => {
-    const [forceUpdater, setForceUpdater] = React.useState({});
-    const answerRef = makeRef(makeCheckable(makeIndexed([<Item/>])));
+const QuestionBoxBodySingleAnswer = () => {
 
-    const Item = () => {
-        return <Form.Control as="textarea" rows={1} className={"w-50"} onClick={(event) => (event.stopPropagation())}/>;
+    function Item({index}) {
+        const handleOnClick = (event) => {
+            answer.splice(index, 1);
+            setAnswer(answer);
+            answerRef.ref = makeCheckable(makeIndexed(answer));
+            console.log(answer);
+            event.stopPropagation()
+        }
+
+        return (
+            <div className={"d-flex justify-content-between"}>
+                <Form.Control as="textarea" rows={1} className={"w-50"} onClick={(event) => (event.stopPropagation())}/>
+                <CloseButton onClick={handleOnClick}/>
+            </div>
+        )
     }
 
+    const [answer, setAnswer] = React.useState([]);
+    const answerRef = makeRef(makeCheckable(makeIndexed(answer)));
+
+
     const handleOnClick = () => {
-        answerRef.ref.push({})
+        setAnswer([...answer, <Item index={answer.length}/>]);
+        answerRef.ref = makeCheckable(makeIndexed(answer));
     }
 
     return (
         <div className={"mt-5"}>
-            <SingleAnswer answerRef={makeRef(makeCheckable(makeIndexed(
-                [<Form.Control as="textarea" rows={1} className={"w-50"} onClick={(event) => (event.stopPropagation())}/>,
-                    <Form.Control as="textarea" rows={1} className={"w-50"} onClick={(event) => (event.stopPropagation())}/>,
-                    <Form.Control as="textarea" rows={1} className={"w-50"} onClick={(event) => (event.stopPropagation())}/>,
-                    <Form.Control as="textarea" rows={1} className={"w-50"} onClick={(event) => (event.stopPropagation())}/>,
-                    <Form.Control as="textarea" rows={1} className={"w-50"} onClick={(event) => (event.stopPropagation())}/>,
-                    <Form.Control as="textarea" rows={1} className={"w-50"} onClick={(event) => (event.stopPropagation())}/>,]
-            )))}/>
-            {/*<ListGroup>*/}
-            {/*    <ListGroup.Item className={"d-flex justify-content-between"}>*/}
-            {/*            <Form.Control as="input"/>*/}
-            {/*            <Button id={"add"} className={"ms-5"}>Правильный ответ</Button>*/}
-            {/*    </ListGroup.Item>*/}
-            {/*</ListGroup>*/}
+            <SingleAnswer answerRef={answerRef}/>
 
             <div className={"mt-3"}>
-                <Button id={"add"}>+</Button>
+                <Button id={"add"} onClick={handleOnClick}>+</Button>
+                <FormLabel htmlFor={"add"} className={"ms-3"}><i>Добавить ответ</i></FormLabel>
+            </div>
+        </div>
+    )
+}
+
+const QuestionBoxBodyMultipleAnswer = () => {
+
+    function Item({index}) {
+        const handleOnClick = (event) => {
+            answer.splice(index, 1);
+            setAnswer(answer);
+            answerRef.ref = makeCheckable(makeIndexed(answer));
+            console.log(answer);
+            event.stopPropagation()
+        }
+
+        return (
+            <div className={"d-flex justify-content-between"}>
+                <Form.Control as="textarea" rows={1} className={"w-50"} onClick={(event) => (event.stopPropagation())}/>
+                <CloseButton onClick={handleOnClick}/>
+            </div>
+        )
+    }
+
+    const [answer, setAnswer] = React.useState([]);
+    const answerRef = makeRef(makeCheckable(makeIndexed(answer)));
+
+
+    const handleOnClick = () => {
+        setAnswer([...answer, <Item index={answer.length}/>]);
+        answerRef.ref = makeCheckable(makeIndexed(answer));
+    }
+
+    return (
+        <div className={"mt-5"}>
+            <MultipleAnswer answerRef={answerRef}/>
+
+            <div className={"mt-3"}>
+                <Button id={"add"} onClick={handleOnClick}>+</Button>
                 <FormLabel htmlFor={"add"} className={"ms-3"}><i>Добавить ответ</i></FormLabel>
             </div>
         </div>

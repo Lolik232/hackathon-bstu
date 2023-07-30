@@ -3,7 +3,7 @@ import {ListGroup} from "react-bootstrap";
 import {dragIndexedItem} from "./List";
 import React from "react";
 
-export const DraggableIndexed = ({indexedRef}) => {
+export const MyDraggable = ({indexedRef}) => {
     const handleOnDragEnd = (event) => {
         if (!event.destination) return;
 
@@ -17,7 +17,7 @@ export const DraggableIndexed = ({indexedRef}) => {
         <Droppable droppableId={Math.random().toString()}>
             {provided => (<ListGroup {...provided.droppableProps} ref={provided.innerRef}>
                 {indexedRef.ref.map((item, index) => (
-                    <Draggable key={item.index.toString()} draggableId={item.index.toString()} index={index}>
+                    <Draggable key={index.toString()} draggableId={index.toString()} index={index}>
                         {provided => (<ListGroup.Item {...provided.draggableProps}
                                                       ref={provided.innerRef} {...provided.dragHandleProps}>
                             {item.value}

@@ -1,4 +1,4 @@
-import {RadioIndexed} from "../List/CheckableIndexed";
+import {RadioIndexed} from "../List/MyCheckable";
 
 export function SingleAnswer({answerRef}) {
     return <RadioIndexed checkableIndexedRef={answerRef}/>

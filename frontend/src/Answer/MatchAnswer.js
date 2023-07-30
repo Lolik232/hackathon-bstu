@@ -1,16 +1,16 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import React from "react";
-import {Indexed} from "../List/Indexed";
-import {DraggableIndexed} from "../List/DraggableIndexed";
+import {MyList} from "../List/MyList";
+import {MyDraggable} from "../List/MyDraggable";
 
 export function MatchAnswer({staticRef, draggableRef}) {
     return (<Row>
         <Col>
-            <Indexed indexedRef={staticRef}/>
+            <MyList indexedRef={staticRef}/>
         </Col>
         <Col>
-            <DraggableIndexed indexedRef={draggableRef}/>
+            <MyDraggable indexedRef={draggableRef}/>
         </Col>
     </Row>)
 }

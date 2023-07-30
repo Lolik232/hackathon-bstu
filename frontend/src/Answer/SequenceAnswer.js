@@ -1,5 +1,5 @@
-import {DraggableIndexed} from "../List/DraggableIndexed";
+import {MyDraggable} from "../List/MyDraggable";
 
 export function SequenceAnswer({answerRef}) {
-    return <DraggableIndexed indexedRef={answerRef}/>
+    return <MyDraggable indexedRef={answerRef}/>
 }

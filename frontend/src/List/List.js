@@ -27,8 +27,6 @@ export const makeIndexed = (list) => {
     for (const i in indexed)
         indexed[i] = {value: indexed[i], index: indexes[i]};
 
-    console.log(indexed)
-
     return indexed;
 }
 
@@ -44,8 +42,6 @@ export const makeCheckable = (list) => {
     let checkable = makeObjectList(list);
     for (const i in checkable)
         checkable[i] = {...checkable[i], checked: Boolean(false)}
-
-    console.log(checkable)
 
     return checkable;
 }

@@ -1,9 +1,9 @@
 import {ListGroup} from "react-bootstrap";
-import "./CheckableIndexed.css"
+import "./Checkable.css"
 import React from "react";
 import {chooseCheckableItem, toggleCheckableItem} from "./List";
 
-const CheckableIndexed = ({checkableIndexedRef, chooseItem}) => {
+const MyCheckable = ({checkableIndexedRef, chooseItem}) => {
     const [forceUpdater, setForceUpdater] = React.useState({});
 
     const handleOnClick = (index) => {
@@ -14,8 +14,7 @@ const CheckableIndexed = ({checkableIndexedRef, chooseItem}) => {
 
     return (<ListGroup>
         {checkableIndexedRef.ref.map((item, index) => {
-            console.log(item, index);
-            return <ListGroup.Item key={item.index}
+            return <ListGroup.Item key={index}
                                    variant={item.checked ? "primary" : "light"}
                                    onClick={() => (handleOnClick(index))}>
                 {item.value}
@@ -25,11 +24,11 @@ const CheckableIndexed = ({checkableIndexedRef, chooseItem}) => {
 }
 
 export const CheckBoxIndexed = ({checkableIndexedRef}) => {
-    return <CheckableIndexed checkableIndexedRef={checkableIndexedRef}
-                             chooseItem={toggleCheckableItem}/>
+    return <MyCheckable checkableIndexedRef={checkableIndexedRef}
+                        chooseItem={toggleCheckableItem}/>
 }
 
 export const RadioIndexed = ({checkableIndexedRef}) => {
-    return <CheckableIndexed checkableIndexedRef={checkableIndexedRef}
-                             chooseItem={chooseCheckableItem}/>
+    return <MyCheckable checkableIndexedRef={checkableIndexedRef}
+                        chooseItem={chooseCheckableItem}/>
 }
