@@ -8,6 +8,7 @@ import {
     createBrowserRouter,
     RouterProvider,
 } from "react-router-dom";
+import {QuestionBoxEditor} from "./QuestionBoxEditor/QuestionBoxEditor";
 
 const router = createBrowserRouter([
     {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
     {
         path: "/test",
         element: <Test/>
+    },
+    {
+        path: "/question-editor",
+        element: <QuestionBoxEditor/>
     }
 ]);
 

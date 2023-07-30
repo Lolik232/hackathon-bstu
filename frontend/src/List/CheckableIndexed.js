@@ -1,38 +1,35 @@
 import {ListGroup} from "react-bootstrap";
+import "./CheckableIndexed.css"
 import React from "react";
-import {chooseCheckableItem, makeRef, toggleCheckableItem} from "./List";
+import {chooseCheckableItem, toggleCheckableItem} from "./List";
 
-const CheckableIndexed = ({checkableIndexedRef, onChanged, chooseItem}) => {
+const CheckableIndexed = ({checkableIndexedRef, chooseItem}) => {
     const [forceUpdater, setForceUpdater] = React.useState({});
 
-    const handleOnChanged = () => {
-        onChanged();
-    }
-
-    const handleOnClick = (item) => {
-        chooseItem(checkableIndexedRef, item.index);
+    const handleOnClick = (index) => {
+        chooseItem(checkableIndexedRef, index);
         setForceUpdater({})
-        handleOnChanged();
     }
 
-    handleOnChanged();
+
     return (<ListGroup>
-        {checkableIndexedRef.ref.map((item) => (<ListGroup.Item key={item.index}
-                                                                active={!!item.checked}
-                                                                onClick={() => (handleOnClick(item))}>
-            {item.value}
-        </ListGroup.Item>))}
+        {checkableIndexedRef.ref.map((item, index) => {
+            console.log(item, index);
+            return <ListGroup.Item key={item.index}
+                                   variant={item.checked ? "primary" : "light"}
+                                   onClick={() => (handleOnClick(index))}>
+                {item.value}
+            </ListGroup.Item>
+        })}
     </ListGroup>)
 }
 
-export const CheckBoxIndexed = ({checkableIndexedRef, onChanged}) => {
+export const CheckBoxIndexed = ({checkableIndexedRef}) => {
     return <CheckableIndexed checkableIndexedRef={checkableIndexedRef}
-                             onChanged={onChanged}
                              chooseItem={toggleCheckableItem}/>
 }
 
-export const RadioIndexed = ({checkableIndexedRef, onChanged}) => {
+export const RadioIndexed = ({checkableIndexedRef}) => {
     return <CheckableIndexed checkableIndexedRef={checkableIndexedRef}
-                             onChanged={onChanged}
                              chooseItem={chooseCheckableItem}/>
 }

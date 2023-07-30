@@ -1,115 +1,195 @@
 import React from "react";
 import {Badge, Card, Container} from "react-bootstrap";
 import {MatchAnswer} from "../Answer/MatchAnswer";
-import {makeCheckable, makeIndexed, makeRef} from "../List/List";
+import {makeCheckable, makeRef} from "../List/List";
 import {SingleAnswer} from "../Answer/SingleAnswer";
 import {MultipleAnswer} from "../Answer/MultipleAnswer";
 import {SequenceAnswer} from "../Answer/SequenceAnswer";
+import {GetNoun} from "../Utility/Utility";
 import {LongAnswer} from "../Answer/LongAnswer";
 import {ComplementAnswer} from "../Answer/ComplementAnswer";
 
-export function GetQuestionBoxContent(type, question, answer, difficulty, cost, hash) {
-    return {
-        type: type,
+export const SingleQuestionBoxWrapper = ({question, annotation, answer, difficulty, cost, hash}) => {
+    return QuestionBoxWrapper({
+        typeName: "Вопрос с выбором одного ответа",
         question: question,
-        answer: answer,
+        annotation: annotation,
+        answerBodyCreator: ({answerRef}) => (<SingleAnswer answerRef={answerRef}/>),
+        answerRef: makeRef(makeCheckable(answer)),
         difficulty: difficulty,
         cost: cost,
-        hash: hash
-    }
+        hash: hash,
+        type: 0,
+        getBeautifulAnswer: (answerRef) => (answerRef.ref.filter(element => element.checked).map(element => element.index))
+    })
 }
 
-export function QuestionBox({content, onChanged}) {
-    const handleOnChanged = (answer) => {
-        onChanged({id: content.hash, answer: answer})
-    }
+export const MultipleQuestionBoxWrapper = ({question, annotation, answer, difficulty, cost, hash}) => {
+    return QuestionBoxWrapper({
+        typeName: "Вопрос с выбором множественного ответа",
+        question: question,
+        annotation: annotation,
+        answerBodyCreator: ({answerRef}) => (<MultipleAnswer answerRef={answerRef}/>),
+        answerRef: makeRef(makeCheckable(answer)),
+        difficulty: difficulty,
+        cost: cost,
+        hash: hash,
+        type: 1,
+        getBeautifulAnswer: (answerRef) => (answerRef.ref.filter(element => element.checked).map(element => element.index))
+    })
+}
 
+export const SequenceQuestionBoxWrapper = ({question, annotation, answer, difficulty, cost, hash}) => {
+    return QuestionBoxWrapper({
+        typeName: "Вопрос на установление последовательности",
+        question: question,
+        annotation: annotation,
+        answerBodyCreator: ({answerRef}) => (<SequenceAnswer answerRef={answerRef}/>),
+        answerRef: makeRef(answer),
+        difficulty: difficulty,
+        cost: cost,
+        hash: hash,
+        type: 2,
+        getBeautifulAnswer: (answerRef) => (answerRef.ref.map(element => element.index))
+    })
+}
+
+export const MatchQuestionBoxWrapper = ({question, annotation, answer, difficulty, cost, hash}) => {
+    return QuestionBoxWrapper({
+        typeName: "Вопрос на установление соответствия",
+        question: question,
+        annotation: annotation,
+        answerBodyCreator: ({answerRef}) => (
+            <MatchAnswer staticRef={answerRef.ref.staticRef} draggableRef={answerRef.ref.draggableRef}/>),
+        answerRef: makeRef({
+            staticRef: makeRef(answer.static),
+            draggableRef: makeRef(answer.draggable),
+        }),
+        difficulty: difficulty,
+        cost: cost,
+        hash: hash,
+        type: 3,
+        getBeautifulAnswer: (answerRef) => (answerRef.ref.draggableRef.ref.map(element => element.index))
+    })
+}
+
+export const ComplementQuestionBoxWrapper = ({question, annotation, difficulty, cost, hash}) => {
+    return QuestionBoxWrapper({
+        typeName: "Вопрос с развернутым ответом",
+        question: question,
+        annotation: annotation,
+        answerBodyCreator: ({answerRef}) => (<ComplementAnswer answerRef={answerRef}/>),
+        answerRef: makeRef(""),
+        difficulty: difficulty,
+        cost: cost,
+        hash: hash,
+        type: 4,
+        getBeautifulAnswer: (answerRef) => (answerRef.ref)
+    })
+}
+
+export const LongQuestionBoxWrapper = ({question, annotation, difficulty, cost, hash}) => {
+    return QuestionBoxWrapper({
+        typeName: "Вопрос с развернутым ответом",
+        question: question,
+        annotation: annotation,
+        answerBodyCreator: ({answerRef}) => (<LongAnswer answerRef={answerRef}/>),
+        answerRef: makeRef(""),
+        difficulty: difficulty,
+        cost: cost,
+        hash: hash,
+        type: 5,
+        getBeautifulAnswer: (answerRef) => (answerRef.ref)
+    })
+}
+
+const QuestionBoxWrapper = ({
+                                typeName,
+                                question,
+                                annotation,
+                                answerBodyCreator,
+                                answerRef,
+                                difficulty,
+                                cost,
+                                hash,
+                                type,
+                                getBeautifulAnswer
+                            }) => {
+    return ({
+        body: <QuestionBoxBody typeName={typeName}
+                               question={question}
+                               annotation={annotation}
+                               answerBody={answerBodyCreator({answerRef: answerRef})}
+                               difficulty={difficulty}
+                               cost={cost}/>,
+        answerRef: answerRef,
+        id: hash,
+        type: type,
+        getBeautifulAnswer: getBeautifulAnswer
+    })
+}
+
+const QuestionBoxBody = ({typeName, question, annotation, answerBody, difficulty, cost}) => {
     return (
         <Container className="CardBox">
             <Card>
                 <Card.Header>
-                    <QuestionBoxHeader content={content}/>
+                    <QuestionBoxBodyHeader typeName={typeName} difficulty={difficulty}/>
                 </Card.Header>
                 <Card.Body>
-                    <QuestionBoxBody content={content}/>
-                    <QuestionBoxAnswer content={content} onChanged={handleOnChanged}/>
+                    <QuestionBoxBodyQuestion question={question}/>
+                    <QuestionBoxBodyAnnotation annotation={annotation}/>
+                    {answerBody}
                 </Card.Body>
                 <Card.Footer>
-                    <QuestionBoxFooter content={content}/>
+                    <QuestionBoxBodyFooter cost={cost}/>
                 </Card.Footer>
             </Card>
         </Container>
     )
 }
 
-function QuestionBoxHeader({content}) {
+const QuestionBoxBodyHeader = ({typeName, difficulty}) => {
     return (
         <div className="d-flex justify-content-between">
-            <i>{GetQuestionTypeName(content)}</i>
+            <i>{typeName}</i>
             <Badge className={"DifficultyBadge"} pill
-                   bg={GetDifficultyColor(content)}>{GetDifficultyName(content)}</Badge>
+                   bg={GetDifficultyColor(difficulty)}>{GetDifficultyName(difficulty)}</Badge>
         </div>
     )
 }
 
-function QuestionBoxBody({content}) {
+const QuestionBoxBodyQuestion = ({question}) => {
     return (
         <div>
-            <p>{content.question}</p>
+            <p>{question}</p>
         </div>
     )
 }
 
-function QuestionBoxAnswer({content, onChanged}) {
-    const handleOnChanged = (answer) => {
-        onChanged(answer);
-    }
-
-    switch (content.type) {
-        case 0:
-            return <SingleAnswer list={content.answer} onChanged={handleOnChanged}/>;
-        case 1:
-            return <MultipleAnswer list={content.answer} onChanged={handleOnChanged}/>;
-        case 2:
-            return <SequenceAnswer list={content.answer} onChanged={handleOnChanged}/>;
-        case 3:
-            return <MatchAnswer staticList={content.answer.staticList}
-                                draggableList={content.answer.draggableList}
-                                onChanged={handleOnChanged}/>
-        case 4:
-            return <ComplementAnswer onChanged={handleOnChanged}/>
-        case 5:
-            return <LongAnswer onChanged={handleOnChanged}/>
-    }
+const QuestionBoxBodyAnnotation = ({annotation}) => {
+    return (
+        <div>
+            <i className={"Annotation"}>
+                Пояснение: {annotation === "" || annotation === undefined || annotation === null
+                ? "нет"
+                : annotation}
+            </i>
+        </div>
+    )
 }
 
-function QuestionBoxFooter({content}) {
+const QuestionBoxBodyFooter = ({cost}) => {
     return (
         <div className="d-flex justify-content-end">
-            <i>{content.cost} {GetNoun(content.cost, "балл", "балла", "баллов")}</i>
+            <i>{cost} {GetNoun(cost, "балл", "балла", "баллов")}</i>
         </div>
     )
 }
 
-function GetQuestionTypeName(content) {
-    switch (content.type) {
-        case 0:
-            return "Вопрос с выбором одного ответа";
-        case 1:
-            return "Вопрос с выбором множественного ответа";
-        case 2:
-            return "Вопрос на установление последовательности";
-        case 3:
-            return "Вопрос на установление соответствия";
-        case 4:
-            return "Вопрос на дополнение фразы";
-        case 5:
-            return "Вопрос с развернутым ответом";
-    }
-}
 
-function GetDifficultyColor(content) {
-    switch (content.difficulty) {
+const GetDifficultyColor = (difficulty) => {
+    switch (difficulty) {
         case 0:
             return "success";
         case 1:
@@ -119,8 +199,8 @@ function GetDifficultyColor(content) {
     }
 }
 
-function GetDifficultyName(content) {
-    switch (content.difficulty) {
+const GetDifficultyName = (difficulty) => {
+    switch (difficulty) {
         case 0:
             return "Легко";
         case 1:
@@ -130,18 +210,3 @@ function GetDifficultyName(content) {
     }
 }
 
-function GetNoun(number, one, two, five) {
-    let n = Math.abs(number);
-    n %= 100;
-    if (n >= 5 && n <= 20) {
-        return five;
-    }
-    n %= 10;
-    if (n === 1) {
-        return one;
-    }
-    if (n >= 2 && n <= 4) {
-        return two;
-    }
-    return five;
-}
