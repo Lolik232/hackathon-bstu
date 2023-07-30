@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
-	"time"
 
+	"github.com/Lolik232/hackathon-bstu/pkg/handler"
 	question "github.com/Lolik232/hackathon-bstu/pkg/struct/question/single"
 	"github.com/Lolik232/hackathon-bstu/pkg/utils/converter"
 	"github.com/Lolik232/hackathon-bstu/storage/pgSQL"
@@ -181,31 +182,108 @@ func testA() {
 	fmt.Println(que)
 }
 
-func main() {
+func HandleAuth(c *gin.Context) {
+	username, ok := c.GetQuery("username")
+	if !ok {
+		c.JSON(http.StatusBadRequest, errors.New("invalid username"))
+		return
+	}
+	password, ok := c.GetQuery("password")
 
-	// Create a new token object, specifying signing method and the claims
-	// you would like it to contain.
+	if !ok {
+		c.JSON(http.StatusBadRequest, errors.New("invalid password"))
+		return
+	}
+	// заглушка TODO: переписать!!!!!! только для тестов
+	if username != "Lolik232" || password != "hash" {
+		c.JSON(http.StatusBadRequest, errors.New("invalid password"))
+		return
+	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId": "1",
-		"nbf":    time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
-	})
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
+		jwt.RegisteredClaims{
+			Issuer:    "",
+			Subject:   "91c10478-2f2a-11ee-be56-0242ac120002",
+			Audience:  []string{},
+			ExpiresAt: &jwt.NumericDate{},
+			NotBefore: &jwt.NumericDate{},
+			IssuedAt:  &jwt.NumericDate{},
+			ID:        "",
+		},
+	)
 
 	// захардкодим пока ключик сюда
 	jwtSigninKey := []byte("super-secret-key")
 
 	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString(jwtSigninKey)
+	tokenString, _ := token.SignedString(jwtSigninKey)
 
-	fmt.Println(tokenString, err)
-
-	parsedToken, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte("super-secret-key"), nil
-	})
-
-	if parsedToken.Valid {
-		log.Println(token.Claims)
-
-		log.Fatal("valid")
+	responceMap := map[string]string{
+		"token": tokenString,
 	}
+
+	c.JSON(http.StatusOK, responceMap)
+}
+
+func HandleUserData(c *gin.Context) {
+	log.Println("user")
+	// TODO: get user data by id
+	_, ok := c.Params.Get(handler.UserIDContextKey)
+
+	if !ok {
+		c.JSON(http.StatusBadRequest, "")
+		return
+	}
+
+	responceMap := map[string]string{
+		"first_name": "Владислав",
+		"last_name":  "Владислав",
+		"mid_name":   "Владислав",
+		"status":     "Студент",
+	}
+
+	c.JSON(http.StatusOK, responceMap)
+}
+
+type TokenValidator struct {
+}
+
+func main() {
+
+	router := gin.Default()
+	router.POST("/auth", HandleAuth)
+
+	auth := router.Group("/")
+
+	auth.Use(handler.GinAuthMiddleware())
+	{
+		auth.GET("/user", HandleUserData)
+	}
+	router.Run(":8080")
+
+	// // Create a new token object, specifying signing method and the claims
+	// // you would like it to contain.
+
+	// token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	// 	"userId": "1",
+	// 	"nbf":    time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+	// })
+
+	// // захардкодим пока ключик сюда
+	// jwtSigninKey := []byte("super-secret-key")
+
+	// // Sign and get the complete encoded token as a string using the secret
+	// tokenString, err := token.SignedString(jwtSigninKey)
+
+	// fmt.Println(tokenString, err)
+
+	// parsedToken, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	// 	return []byte("super-secret-key"), nil
+	// })
+
+	// if parsedToken.Valid {
+	// 	log.Println(token.Claims)
+
+	// 	log.Fatal("valid")
+	// }
 }
