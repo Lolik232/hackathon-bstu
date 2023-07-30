@@ -4,14 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+	"math/rand"
+	"net/http"
+	"time"
+
 	question "github.com/Lolik232/hackathon-bstu/pkg/struct/question/single"
 	"github.com/Lolik232/hackathon-bstu/pkg/utils/converter"
 	"github.com/Lolik232/hackathon-bstu/storage/pgSQL"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/exp/slog"
-	"log"
-	"math/rand"
-	"net/http"
 )
 
 func testStart() {
@@ -179,5 +182,30 @@ func testA() {
 }
 
 func main() {
-	
+
+	// Create a new token object, specifying signing method and the claims
+	// you would like it to contain.
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"userId": "1",
+		"nbf":    time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+	})
+
+	// захардкодим пока ключик сюда
+	jwtSigninKey := []byte("super-secret-key")
+
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString(jwtSigninKey)
+
+	fmt.Println(tokenString, err)
+
+	parsedToken, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte("super-secret-key"), nil
+	})
+
+	if parsedToken.Valid {
+		log.Println(token.Claims)
+
+		log.Fatal("valid")
+	}
 }

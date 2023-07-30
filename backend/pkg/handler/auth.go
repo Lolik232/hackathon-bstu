@@ -9,8 +9,9 @@ import (
 )
 
 const HeaderAuthKey = "Authorization"
-
 const UserIDContextKey = "UserID"
+
+var ErrUnathorized = errors.New("Unauthorized")
 
 type TokenValidator interface {
 	GetUserIDFromToken(ctx context.Context, token string) (string, error)
@@ -21,13 +22,13 @@ func GinAuthMiddleware(validator TokenValidator) gin.HandlerFunc {
 		token := c.Request.Header.Get(HeaderAuthKey)
 
 		if len(token) == 0 {
-			c.AbortWithError(http.StatusUnauthorized, errors.New("Unauthorized"))
+			c.AbortWithError(http.StatusUnauthorized, ErrUnathorized)
 		}
 
 		id, err := validator.GetUserIDFromToken(c.Request.Context(), token)
 
 		if err != nil {
-			c.AbortWithError(http.StatusUnauthorized, errors.New("Unauthorized"))
+			c.AbortWithError(http.StatusUnauthorized, ErrUnathorized)
 		}
 
 		// TODO: replace
