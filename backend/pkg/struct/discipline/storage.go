@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/Lolik232/hackathon-bstu/storage/pgSQL"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/exp/slog"
 )
@@ -44,20 +45,26 @@ func (r repository) FindAll(ctx context.Context) (p []Discipline, err error) {
 	if err != nil {
 		return nil, err
 	}
+	/*
+		disciplines := make([]Discipline, 0)
+		for rows.Next() {
+			var d Discipline
 
-	disciplines := make([]Discipline, 0)
-	for rows.Next() {
-		var d Discipline
+			err := rows.Scan(&d.Id, &d.Name)
+			if err != nil {
+				return nil, err
+			}
 
-		err := rows.Scan(&d.Id, &d.Name)
-		if err != nil {
-			return nil, err
+			disciplines = append(disciplines, d)
 		}
 
-		disciplines = append(disciplines, d)
-	}
+		if err := rows.Err(); err != nil {
+			return nil, err
+		}
+	*/
 
-	if err := rows.Err(); err != nil {
+	disciplines, err := pgx.CollectRows(rows, pgx.RowToStructByName[Discipline])
+	if err != nil {
 		return nil, err
 	}
 
@@ -67,11 +74,15 @@ func (r repository) FindAll(ctx context.Context) (p []Discipline, err error) {
 func (r repository) FindOne(ctx context.Context, id int) (Discipline, error) {
 	q := `SELECT id, name FROM discipline WHERE id = $1`
 
-	var d Discipline
-	err := r.client.QueryRow(ctx, q, id).Scan(&d.Id, &d.Name)
+	//var d Discipline
+	//err := r.client.QueryRow(ctx, q, id).Scan(&d.Id, &d.Name)
+
+	row, _ := r.client.Query(ctx, q, id)
+	d, err := pgx.CollectOneRow(row, pgx.RowToStructByName[Discipline])
 	if err != nil {
 		return Discipline{}, nil
 	}
+
 	return d, nil
 }
 

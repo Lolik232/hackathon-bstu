@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/Lolik232/hackathon-bstu/pkg/struct/question"
 	"github.com/Lolik232/hackathon-bstu/storage/pgSQL"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/exp/slog"
 	"log"
@@ -50,19 +51,21 @@ func (r repository) FindAll(ctx context.Context) (c []Sequencing, err error) {
 	if err != nil {
 		return nil, err
 	}
+	/*
+		sequencing := make([]Sequencing, 0)
+		for rows.Next() {
+			var s Sequencing
 
-	sequencing := make([]Sequencing, 0)
-	for rows.Next() {
-		var s Sequencing
+			err := rows.Scan(&s.Id, &s.QuestionBody, &s.Explanation, &s.Answers, &s.IncorrectAnswers, &s.CorrectAnswer, &s.Estimation, &s.Complexity, &s.IdDiscipline, &s.IdCompetence)
+			if err != nil {
+				return nil, err
+			}
 
-		err := rows.Scan(&s.Id, &s.QuestionBody, &s.Explanation, &s.Answers, &s.IncorrectAnswers, &s.CorrectAnswer, &s.Estimation, &s.Complexity, &s.IdDiscipline, &s.IdCompetence)
-		if err != nil {
-			return nil, err
+			sequencing = append(sequencing, s)
 		}
+	*/
 
-		sequencing = append(sequencing, s)
-	}
-
+	sequencing, err := pgx.CollectRows(rows, pgx.RowToStructByName[Sequencing])
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -73,12 +76,16 @@ func (r repository) FindAll(ctx context.Context) (c []Sequencing, err error) {
 func (r repository) FindOne(ctx context.Context, id int) (Sequencing, error) {
 	q := `SELECT id, body, explanation, answers, correct_answer,incorrect_answer,estimation, complexity, id_discipline, id_competence FROM single WHERE id = $1`
 
-	var s Sequencing
-	err := r.client.QueryRow(ctx, q, id).Scan(&s.Id, &s.Explanation, &s.QuestionBody, &s.Answers, &s.CorrectAnswer, &s.IncorrectAnswers, &s.Estimation, &s.Complexity, &s.IdDiscipline, &s.IdCompetence)
+	//var s Sequencing
+	//err := r.client.QueryRow(ctx, q, id).Scan(&s.Id, &s.Explanation, &s.QuestionBody, &s.Answers, &s.CorrectAnswer, &s.IncorrectAnswers, &s.Estimation, &s.Complexity, &s.IdDiscipline, &s.IdCompetence)
+
+	row, _ := r.client.Query(ctx, q, id)
+	s, err := pgx.CollectOneRow(row, pgx.RowToStructByName[Sequencing])
 	if err != nil {
 		log.Fatal(err)
 		return Sequencing{}, nil
 	}
+
 	return s, nil
 }
 

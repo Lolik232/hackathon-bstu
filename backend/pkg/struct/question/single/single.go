@@ -14,6 +14,18 @@ type Single struct {
 	IdCompetence  int      `json:"id_competence"`  // id компетенции
 }
 
-func NewSingle(questionBody string, answers []string, correctAnswer int, estimation int, complexity int, idDiscipline int, idCompetence int) *Single {
-	return &Single{QuestionBody: questionBody, Answers: answers, CorrectAnswer: correctAnswer, Estimation: estimation, Complexity: complexity, IdDiscipline: idDiscipline, IdCompetence: idCompetence}
+func NewSingle(questionBody string, explanation string, answers []string, correctAnswer int, estimation int, complexity int, idDiscipline int, idCompetence int) *Single {
+	return &Single{
+		QuestionBody:  questionBody,
+		Explanation:   explanation,
+		Answers:       answers,
+		CorrectAnswer: correctAnswer,
+		Estimation:    estimation,
+		Complexity:    complexity,
+		IdDiscipline:  idDiscipline,
+		IdCompetence:  idCompetence}
+}
+
+func AAA() {
+
 }
