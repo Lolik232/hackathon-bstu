@@ -2,7 +2,6 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import './Login.css';
 import {Navbar, Nav, FloatingLabel, NavbarBrand, Container} from "react-bootstrap";
-import info from "../resources/info.fa120a3e.svg";
 import Row from "react-bootstrap/Row";
 import logo from "../resources/logo-blue.svg";
 

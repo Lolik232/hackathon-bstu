@@ -11,7 +11,7 @@ import './../App.css';
 import AppFooter from "../Footer/AppFooter";
 import React from "react";
 import AppHeader from "../Header/AppHeader";
-import {Button} from "react-bootstrap";
+import {Button, Container} from "react-bootstrap";
 import {makeRef} from "../List/List";
 
 export const Test = ({testName}) => {
@@ -188,9 +188,9 @@ const TestBodyFooter = ({onSubmit}) => {
     }
 
     return (
-        <div>
-            <Button onClick={handleOnClick}>Завершить тест</Button>
-        </div>
+        <Container className={"mt-5 mb-5"}>
+            <Button onClick={handleOnClick} className={"w-100"}>Завершить тест</Button>
+        </Container>
     )
 }
 
