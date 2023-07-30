@@ -12,10 +12,10 @@ import (
 )
 
 type Repository interface {
-	Create(ctx context.Context, s *Single) error
-	FindAll(ctx context.Context) (p []Single, err error)
-	FindOne(ctx context.Context, id int) (Single, error)
-	Update(ctx context.Context, p Single) error
+	Create(ctx context.Context, s *Multiple) error
+	FindAll(ctx context.Context) (p []Multiple, err error)
+	FindOne(ctx context.Context, id int) (Multiple, error)
+	Update(ctx context.Context, p Multiple) error
 	Delete(ctx context.Context, id int) error
 }
 
@@ -24,12 +24,12 @@ type repository struct {
 	logger *slog.Logger
 }
 
-func (r repository) Create(ctx context.Context, s *Single) error {
-	q := `INSERT INTO single (body, explanation, answers, correct_ans,estimation, complexity, id_discipline, id_competence)
+func (r repository) Create(ctx context.Context, s *Multiple) error {
+	q := `INSERT INTO single (body,explanation, answers, correct_ans,estimation, complexity, id_discipline, id_competence)
 VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`
 
 	if err := r.client.QueryRow(
-		ctx, q, s.QuestionBody, s.Explanation, s.Answers, s.CorrectAnswer, s.Estimation, s.Complexity, s.IdDiscipline, s.IdCompetence).
+		ctx, q, s.QuestionBody, s.Answers, s.CorrectAnswers, s.Estimation, s.Complexity, s.IdDiscipline, s.IdCompetence).
 		Scan(&s.Id); err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok {
 			newErr := fmt.Errorf(fmt.Sprintf("SQL Error: %s\n Detail: %s\n Where: %s\n Code: %s\n SQLState: %s\n",
@@ -43,24 +43,24 @@ VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`
 	return nil
 }
 
-func (r repository) FindAll(ctx context.Context) (c []Single, err error) {
-	q := `SELECT id, body, explanation, answers, correct_ans, estimation, complexity, id_discipline, id_competence FROM single`
+func (r repository) FindAll(ctx context.Context) (c []Multiple, err error) {
+	q := `SELECT id,body,explanation, answers, correct_answers, estimation, complexity,id_discipline,id_competence FROM Multiple`
 
 	rows, err := r.client.Query(ctx, q)
 	if err != nil {
 		return nil, err
 	}
 
-	singles := make([]Single, 0)
+	singles := make([]Multiple, 0)
 	for rows.Next() {
-		var s Single
+		var m Multiple
 
-		err := rows.Scan(&s.Id, &s.QuestionBody, &s.Explanation, &s.Answers, &s.CorrectAnswer, &s.Estimation, &s.Complexity, &s.IdDiscipline, &s.IdCompetence)
+		err := rows.Scan(&m.Id, &m.QuestionBody, &m.Explanation, &m.Answers, &m.CorrectAnswers, &m.Estimation, &m.Complexity, &m.IdDiscipline, &m.IdCompetence)
 		if err != nil {
 			return nil, err
 		}
 
-		singles = append(singles, s)
+		singles = append(singles, m)
 	}
 
 	if err := rows.Err(); err != nil {
@@ -70,19 +70,19 @@ func (r repository) FindAll(ctx context.Context) (c []Single, err error) {
 	return singles, nil
 }
 
-func (r repository) FindOne(ctx context.Context, id int) (Single, error) {
-	q := `SELECT id, body,explanation, answers, correct_ans,estimation, complexity, id_discipline, id_competence FROM single WHERE id = $1`
+func (r repository) FindOne(ctx context.Context, id int) (Multiple, error) {
+	q := `SELECT id, body, explanation, answers, correct_answers,estimation, complexity, id_discipline, id_competence FROM single WHERE id = $1`
 
-	var s Single
-	err := r.client.QueryRow(ctx, q, id).Scan(&s.Id, &s.Explanation, &s.QuestionBody, &s.Answers, &s.CorrectAnswer, &s.Estimation, &s.Complexity, &s.IdDiscipline, &s.IdCompetence)
+	var m Multiple
+	err := r.client.QueryRow(ctx, q, id).Scan(&m.Id, &m.QuestionBody, &m.Answers, &m.CorrectAnswers, &m.Estimation, &m.Complexity, &m.IdDiscipline, &m.IdCompetence)
 	if err != nil {
 		log.Fatal(err)
-		return Single{}, nil
+		return Multiple{}, nil
 	}
-	return s, nil
+	return m, nil
 }
 
-func (r repository) Update(ctx context.Context, c Single) error {
+func (r repository) Update(ctx context.Context, c Multiple) error {
 	//TODO implement me
 	panic("implement me")
 }
@@ -97,7 +97,7 @@ func NewRepository(client pgSQL.Client, logger *slog.Logger) Repository {
 	return &repository{client: client, logger: logger}
 }
 
-func (q Single) AddToDB(s *question.IQuestion) {
+func (q Multiple) AddToDB(s *question.IQuestion) {
 	logger := slog.Logger{}
 	pgSQLClient, err := pgSQL.NewClient(context.TODO())
 	if err != nil {
@@ -111,10 +111,9 @@ func (q Single) AddToDB(s *question.IQuestion) {
 	}
 }
 
-func (q Single) JSON2Question(jsonStr []byte, sq question.IQuestion) {
+func (q Multiple) JSON2Question(jsonStr []byte, sq question.IQuestion) {
 	err := json.Unmarshal(jsonStr, &sq)
 	if err != nil {
 		log.Fatal("не удалось преобразовать JSON в Single")
 	}
-
 }
