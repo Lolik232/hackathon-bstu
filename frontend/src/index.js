@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import {QuestionBoxEditor} from "./QuestionBoxEditor/QuestionBoxEditor";
 
+import Login from "./Login/Login";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
     {
         path: "/question-editor",
         element: <QuestionBoxEditor/>
+    },
+    {
+        path: "/login",
+        element: <Login/>
     }
 ]);
 
