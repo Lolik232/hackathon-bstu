@@ -33,7 +33,18 @@ export const Test = ({testName}) => {
         return answer;
     }
 
-    const addQuestion = ({type, question, annotation, answer, difficulty, cost, hash}) => {
+    let jsons = [
+        "{\"type\":0,\"question\":\"Сколько?\",\"annotation\":\"легендарная фраза\",\"questionList\":[\"6\",\"Мало\",\"Гоголев\"],\"indexList\":[41,12,37],\"difficulty\":1,\"cost\":1,\"hash\":123}",
+        "{\"type\":1,\"question\":\"Сколько?\",\"annotation\":\"легендарная фраза\",\"questionList\":[\"6\",\"Мало\",\"Гоголев\"],\"indexList\":[41,12,37],\"difficulty\":1,\"cost\":1,\"hash\":12312}",
+        "{\"type\":2,\"question\":\"Сколько?\",\"annotation\":\"легендарная фраза\",\"questionList\":[\"6\",\"Мало\",\"Гоголев\"],\"indexList\":[41,12,37],\"difficulty\":0,\"cost\":1,\"hash\":3245}",
+        "{\"type\":3,\"question\":\"Сколько?\",\"annotation\":\"легендарная фраза\",\"staticList\":[\"6\",\"Мало\",\"Гоголев\"],\"draggableList\":[\"6\",\"Мало\",\"Гоголев\"],\"indexList\":[41,12,37],\"difficulty\":2,\"cost\":7,\"hash\":2435423}",
+        "{\"type\":4,\"question\":\"Сколько?\",\"annotation\":\"легендарная фраза\",\"difficulty\":1,\"cost\":1,\"hash\":8907}",
+        "{\"type\":5,\"question\":\"Сколько?\",\"annotation\":\"легендарная фраза\",\"difficulty\":2,\"cost\":7,\"hash\":45775}"
+    ]
+
+    const addQuestion = ({json}) => {
+        const paper = JSON.parse(json.toString());
+
         const questionBoxWrapperCreator = ({type}) => {
             switch (type) {
                 case 0:
@@ -52,83 +63,37 @@ export const Test = ({testName}) => {
         }
 
 
-        testWrapper.dataRef.ref.push(questionBoxWrapperCreator({type: type})({
-            question: question,
-            answer: answer,
-            annotation: annotation,
-            difficulty: difficulty,
-            cost: cost,
-            hash: hash
+        testWrapper.dataRef.ref.push(questionBoxWrapperCreator({type: paper.type})({
+            question: paper.question,
+            answer: paper.type === 3
+                ? {
+                    static: getQuestionAnswer({
+                        questionList: paper.staticList,
+                        indexList: paper.indexList
+                    }),
+                    draggable: getQuestionAnswer({
+                        questionList: paper.draggableList,
+                        indexList: paper.indexList
+                    })
+                }
+                : paper.type === 4 || paper.type === 5
+                    ? ""
+                    : getQuestionAnswer({
+                        questionList: paper.questionList,
+                        indexList: paper.indexList
+                    }),
+            annotation: paper.annotation,
+            difficulty: paper.difficulty,
+            cost: paper.cost,
+            hash: paper.hash
         }))
     }
 
     let testWrapper = TestWrapper({testName: testName, onSubmit: handleOnSubmit});
 
-    addQuestion({
-        type: 0,
-        question: "Сколько?",
-        annotation: "легендарная фраза",
-        answer: getQuestionAnswer({
-            questionList: ["6", "Мало", "Гоголев"],
-            indexList: [41, 12, 37]
-        }),
-        difficulty: 1,
-        cost: 1,
-        hash: 123
-    })
-    addQuestion({
-        type: 1,
-        question: "Сколько?",
-        answer: getQuestionAnswer({
-            questionList: ["6", "Мало", "Гоголев"],
-            indexList: [41, 12, 37]
-        }),
-        difficulty: 1,
-        cost: 1,
-        hash: 1324234
-    })
-    addQuestion({
-        type: 2,
-        question: "Сколько?",
-        answer: getQuestionAnswer({
-            questionList: ["6", "Мало", "Гоголев"],
-            indexList: [41, 12, 37]
-        }),
-        difficulty: 2,
-        cost: 1,
-        hash: 1234
-    })
-    addQuestion({
-        type: 3,
-        question: "Сколько?",
-        answer: {
-            static: getQuestionAnswer({
-                questionList: ["6", "Мало", "Гоголев"],
-                indexList: [41, 12, 37]
-            }),
-            draggable: getQuestionAnswer({
-                questionList: ["6", "Мало", "Гоголев"],
-                indexList: [41, 12, 37]
-            }),
-        },
-        difficulty: 2,
-        cost: 1,
-        hash: 234534
-    })
-    addQuestion({
-        type: 4,
-        question: "Сколько?",
-        difficulty: 1,
-        cost: 1,
-        hash: 4523
-    })
-    addQuestion({
-        type: 5,
-        question: "Сколько?",
-        difficulty: 2,
-        cost: 6,
-        hash: 568
-    })
+    for (const i in jsons)
+        addQuestion({json: jsons[i]})
+
     return testWrapper.body
 }
 

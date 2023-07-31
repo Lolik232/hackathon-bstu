@@ -6,28 +6,44 @@ import {SingleAnswer} from "../Answer/SingleAnswer";
 import {makeCheckable, makeIndexed, makeRef} from "../List/List";
 import {MultipleAnswer} from "../Answer/MultipleAnswer";
 
-export function EditableQuestionBox() {
+export function EditableQuestionBoxWrapper() {
+    const dataRef = makeRef({
+        type: 0,
+        difficulty: 0,
+        cost: 0,
+        question: "",
+        annotation: "",
+        answerListRef: makeRef([])
+    });
+
+    return {
+        body: <EditableQuestionBox dataRef={dataRef}/>,
+        dataRef: dataRef
+    }
+}
+
+function EditableQuestionBox({dataRef}) {
 
     return (
         <Container className="CardBox">
             <Card>
                 <Card.Header>
-                    <QuestionBoxBodyHeader/>
+                    <QuestionBoxBodyHeader dataRef={dataRef}/>
                 </Card.Header>
                 <Card.Body>
-                    <QuestionBoxBodyQuestion/>
-                    <QuestionBoxBodyAnnotation/>
-                    <QuestionBoxBodyMultipleAnswer/>
+                    <QuestionBoxBodyQuestion dataRef={dataRef}/>
+                    <QuestionBoxBodyAnnotation dataRef={dataRef}/>
+                    <QuestionBoxBodyMultipleAnswer dataRef={dataRef}/>
                 </Card.Body>
                 <Card.Footer>
-                    <QuestionBoxBodyFooter/>
+                    <QuestionBoxBodyFooter dataRef={dataRef}/>
                 </Card.Footer>
             </Card>
         </Container>
     )
 }
 
-function QuestionBoxBodyHeader() {
+function QuestionBoxBodyHeader({dataRef}) {
     const typeOptions = [
         {value: 0, label: "Вопрос с выбором одного ответа"},
         {value: 1, label: "Вопрос с выбором множественного ответа"},
@@ -45,24 +61,32 @@ function QuestionBoxBodyHeader() {
 
     return (
         <div className="d-flex justify-content-between">
-            <Select options={typeOptions} placeholder={"Выберите тип вопроса"}/>
-            <Select options={difficultyOptions} placeholder={"Выберите сложность вопроса"}/>
+            <Select options={typeOptions} placeholder={"Выберите тип вопроса"} onChange={(value) => {
+                dataRef.ref.type = value.value;
+            }}/>
+            <Select options={difficultyOptions} placeholder={"Выберите сложность вопроса"} onChange={(value) => {
+                dataRef.ref.difficulty = value.value;
+            }}/>
         </div>
     )
 }
 
-function QuestionBoxBodyQuestion() {
+function QuestionBoxBodyQuestion({dataRef}) {
     return (
         <div>
-            <Form.Control as="textarea" placeholder={"Введите текст вопроса"} rows={5}/>
+            <Form.Control as="textarea" placeholder={"Введите текст вопроса"} rows={5} onInput={(event) => {
+                dataRef.ref.question = event.target.value;
+            }}/>
         </div>
     )
 }
 
-function QuestionBoxBodyAnnotation() {
+function QuestionBoxBodyAnnotation({dataRef}) {
     return (
         <div className={"mt-3"}>
-            <Form.Control as="textarea" placeholder={"Введите пояснение к вопросу"} rows={1}/>
+            <Form.Control as="textarea" placeholder={"Введите пояснение к вопросу"} rows={1} onInput={(event) => {
+                dataRef.ref.annotation = event.target.value;
+            }}/>
         </div>
     )
 }
@@ -107,9 +131,10 @@ const QuestionBoxBodySingleAnswer = () => {
     )
 }
 
-const QuestionBoxBodyMultipleAnswer = () => {
+const QuestionBoxBodyMultipleAnswer = ({dataRef}) => {
+    const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
 
-    function Item({index}) {
+    function Item({index, inValueRef}) {
         const handleOnClick = (event) => {
             answer.splice(index, 1);
             setAnswer(answer);
@@ -118,9 +143,15 @@ const QuestionBoxBodyMultipleAnswer = () => {
             event.stopPropagation()
         }
 
+
         return (
             <div className={"d-flex justify-content-between"}>
-                <Form.Control as="textarea" rows={1} className={"w-50"} onClick={(event) => (event.stopPropagation())}/>
+                <Form.Control as="textarea" rows={1} className={"w-50"}
+                              onClick={(event) => (event.stopPropagation())}
+                              onChange={(event)=>{
+                                  inValueRef.ref = event.target.value;
+                                  forceUpdate();
+                              }}/>
                 <CloseButton onClick={handleOnClick}/>
             </div>
         )
@@ -131,9 +162,11 @@ const QuestionBoxBodyMultipleAnswer = () => {
 
 
     const handleOnClick = () => {
-        setAnswer([...answer, <Item index={answer.length}/>]);
+        setAnswer([...answer, <Item index={answer.length} inValueRef={makeRef("")}/>]);
         answerRef.ref = makeCheckable(makeIndexed(answer));
     }
+
+    dataRef.ref.answerListRef = answerRef;
 
     return (
         <div className={"mt-5"}>
@@ -148,12 +181,13 @@ const QuestionBoxBodyMultipleAnswer = () => {
 }
 
 
-function QuestionBoxBodyFooter() {
+function QuestionBoxBodyFooter({dataRef}) {
     const [cost, setCost] = React.useState(0)
 
     const handleOnInput = (event) => {
         const inputCost = (event.target.validity.valid) ? event.target.value : cost;
         setCost(inputCost);
+        dataRef.ref.cost = inputCost;
     }
 
 
