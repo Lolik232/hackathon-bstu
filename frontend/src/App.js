@@ -14,6 +14,7 @@ function App() {
                 <Route path="/test" element={<RequireAuth loginPath={"/login"}><Test/></RequireAuth>}></Route>
                 <Route path="/question-editor" element={<RequireAuth loginPath={"/login"}><QuestionBoxEditor/></RequireAuth>}></Route>
                 <Route path="/login" element={<Login/>}></Route>
+                <Route path="/question-editor" element={<RequireAuth loginPath={"/login"}><QuestionBoxEditor/></RequireAuth>}></Route>
             </Routes>
         </>
     );

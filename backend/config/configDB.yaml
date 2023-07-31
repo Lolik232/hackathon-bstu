@@ -1,0 +1,7 @@
+database:
+  host: "85.193.89.158"
+  user: "gen_user"
+  password: "Wy5mu]K^-7S6ne"
+  db_name: "default_db"
+  ssl_mode: "disable"
+  max_attempts: 5
