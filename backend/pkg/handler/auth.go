@@ -3,9 +3,11 @@ package handler
 import (
 	"context"
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 const HeaderAuthKey = "Authorization"
@@ -17,21 +19,32 @@ type TokenValidator interface {
 	GetUserIDFromToken(ctx context.Context, token string) (string, error)
 }
 
-func GinAuthMiddleware(validator TokenValidator) gin.HandlerFunc {
+func GinAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		log.Println("auth")
+
 		token := c.Request.Header.Get(HeaderAuthKey)
 
 		if len(token) == 0 {
-			c.AbortWithError(http.StatusUnauthorized, ErrUnathorized)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, "")
+			return
 		}
 
-		id, err := validator.GetUserIDFromToken(c.Request.Context(), token)
+		parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+			return []byte("super-secret-key"), nil
+		})
 
-		if err != nil {
-			c.AbortWithError(http.StatusUnauthorized, ErrUnathorized)
+		if err != nil && !errors.Is(err, jwt.ErrTokenInvalidClaims) {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, "")
+			return
 		}
+
+		// TODO: validate token
+
+		userId, _ := parsedToken.Claims.GetSubject()
 
 		// TODO: replace
-		c.AddParam(UserIDContextKey, id)
+		c.AddParam(UserIDContextKey, userId)
+		c.Next()
 	}
 }
