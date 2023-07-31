@@ -6,8 +6,7 @@
   - фреймворк **React**
 - **Backend** часть
   - язык **Golang**
-  - **GraphQL**
-  - **Redis** - ?
+  - **Rest API**
   - **PostgreSQL**
 
 ## Описание
