@@ -1,4 +1,4 @@
-package question
+package multiple
 
 // Multiple - вопрос закрытого типа с одиночным выбором.
 // Реализует интерефейс - Question.
@@ -14,6 +14,6 @@ type Multiple struct {
 	IdCompetence   int      `json:"id_competence"`   // id компетенции
 }
 
-func NewSingle(questionBody string, explanation string, answers []string, correctAnswer []int, estimation int, complexity int, idDiscipline int, idCompetence int) *Multiple {
+func NewMultiple(questionBody string, explanation string, answers []string, correctAnswer []int, estimation int, complexity int, idDiscipline int, idCompetence int) *Multiple {
 	return &Multiple{QuestionBody: questionBody, Explanation: explanation, Answers: answers, CorrectAnswers: correctAnswer, Estimation: estimation, Complexity: complexity, IdDiscipline: idDiscipline, IdCompetence: idCompetence}
 }

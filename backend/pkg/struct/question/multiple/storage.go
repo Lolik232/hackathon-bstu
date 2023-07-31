@@ -1,4 +1,4 @@
-package question
+package multiple
 
 import (
 	"context"
@@ -116,4 +116,21 @@ func (q Multiple) JSON2Question(jsonStr []byte, sq question.IQuestion) {
 	if err != nil {
 		log.Fatal("не удалось преобразовать JSON в Single")
 	}
+}
+
+// GetDB - получить вопрос из бд по его id
+func (q Multiple) GetDB(id int) question.IQuestion {
+	logger := slog.Logger{}
+	pgSQLClient, err := pgSQL.NewClient(context.TODO())
+	if err != nil {
+		slog.Warn(err.Error())
+	}
+
+	repository := NewRepository(pgSQLClient, &logger)
+	s, err := repository.FindOne(context.TODO(), id)
+	if err != nil {
+		logger.Info("Error")
+	}
+
+	return s
 }

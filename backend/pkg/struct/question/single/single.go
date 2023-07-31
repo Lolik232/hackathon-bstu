@@ -25,7 +25,3 @@ func NewSingle(questionBody string, explanation string, answers []string, correc
 		IdDiscipline:  idDiscipline,
 		IdCompetence:  idCompetence}
 }
-
-func AAA() {
-
-}

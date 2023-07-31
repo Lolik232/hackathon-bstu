@@ -25,8 +25,7 @@ type repository struct {
 }
 
 func (r repository) Create(ctx context.Context, s *Single) error {
-	q := `INSERT INTO single (body, explanation, answers, correct_ans,estimation, complexity, id_discipline, id_competence)
-VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`
+	q := `INSERT INTO single (body, explanation, answers, correct_ans,estimation, complexity, id_discipline, id_competence) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`
 
 	if err := r.client.QueryRow(
 		ctx, q, s.QuestionBody, s.Explanation, s.Answers, s.CorrectAnswer, s.Estimation, s.Complexity, s.IdDiscipline, s.IdCompetence).
@@ -79,6 +78,7 @@ func (r repository) FindOne(ctx context.Context, id int) (Single, error) {
 		log.Fatal(err)
 		return Single{}, nil
 	}
+
 	return s, nil
 }
 
@@ -116,5 +116,26 @@ func (q Single) JSON2Question(jsonStr []byte, sq question.IQuestion) {
 	if err != nil {
 		log.Fatal("не удалось преобразовать JSON в Single")
 	}
+}
 
+func copy(q Single, s Single) {
+	q.Id = s.Id
+	q.QuestionBody = s.QuestionBody
+}
+
+// GetDB - получить вопрос из бд по его id
+func (q Single) GetDB(id int) question.IQuestion {
+	logger := slog.Logger{}
+	pgSQLClient, err := pgSQL.NewClient(context.TODO())
+	if err != nil {
+		slog.Warn(err.Error())
+	}
+
+	repository := NewRepository(pgSQLClient, &logger)
+	s, err := repository.FindOne(context.TODO(), id)
+	if err != nil {
+		logger.Info("Error")
+	}
+
+	return s
 }
