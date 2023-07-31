@@ -1,7 +1,7 @@
 .Test {
     min-height:100%;
     position:relative;
-    margin-top: 101px;
+
 }
 
 @font-face {
@@ -34,9 +34,4 @@
     width: 130px;
     height: 50px;
     font-family: Open Sans, sans-serif;
-}
-
-.Content {
-    min-height: calc(100vh - 200px);
-    /* 80px header + 40px footer = 120px  */
 }
