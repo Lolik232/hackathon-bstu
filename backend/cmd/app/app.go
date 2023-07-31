@@ -195,7 +195,7 @@ func HandleAuth(c *gin.Context) {
 		return
 	}
 	// заглушка TODO: переписать!!!!!! только для тестов
-	if username != "Lolik232" || password != "hash" {
+	if username != "Lolik232@ya.ru" || password != "hash" {
 		c.JSON(http.StatusBadRequest, errors.New("invalid password"))
 		return
 	}
